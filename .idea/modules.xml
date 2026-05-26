@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/london-meet.iml" filepath="$PROJECT_DIR$/.idea/london-meet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/london-server/london-server.iml" filepath="$PROJECT_DIR$/backend/london-server/london-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/london-common/sky-common.iml" filepath="$PROJECT_DIR$/backend/london-common/sky-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/london-pojo/sky-pojo.iml" filepath="$PROJECT_DIR$/backend/london-pojo/sky-pojo.iml" />
     </modules>
   </component>
 </project>

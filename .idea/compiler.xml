@@ -7,13 +7,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="backend" />
+        <module name="common" />
+        <module name="pojo" />
+        <module name="server" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="london-server" target="17" />
+      <module name="sky-common" target="17" />
+      <module name="sky-pojo" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="backend" options="-parameters" />
+      <module name="backend" options="" />
+      <module name="common" options="-parameters" />
+      <module name="london-server" options="-parameters" />
+      <module name="pojo" options="-parameters" />
+      <module name="server" options="-parameters" />
+      <module name="sky-common" options="-parameters" />
+      <module name="sky-pojo" options="-parameters" />
     </option>
   </component>
 </project>
