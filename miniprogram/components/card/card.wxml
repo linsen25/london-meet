@@ -1,0 +1,51 @@
+<view class="card" bindtap="onTap">
+  <view class="card__cover">
+    <image
+      class="card__img {{coverLoaded ? 'is-loaded' : ''}}"
+      mode="aspectFill"
+      src="{{coverSrc}}"
+      bindload="onCoverLoad"
+      binderror="onCoverError"
+    />
+  </view>
+
+  <view class="card__body">
+    <view class="card__title">{{displayTitle}}</view>
+
+    <view class="card__bottom">
+      <image
+        class="card__avatar"
+        mode="aspectFill"
+        src="{{avatarSrc}}"
+      />
+
+      <view class="card__progress">
+        <mf-deadline-pill
+          startAt="{{data.startAt}}"
+          endAt="{{data.endAt}}"
+          value="{{progressPct}}"
+          bgGif="{{data.progressGif}}"
+          showLabel="{{true}}"
+          height="18rpx"
+          trackBg="rgba(255,255,255,0.18)"
+          trackBorder="rgba(255,255,255,0.22)"
+          textColor="rgba(255,255,255,0.82)"
+          greenAtOrAbove="{{50}}"
+          yellowAtOrAbove="{{25}}"
+          green="#07C160"
+          yellow="#FF9500"
+          red="#FF3B30"
+        />
+      </view>
+
+      <view class="card__likes" catchtap="onLikeTap">
+        <van-icon
+          name="{{innerLiked ? 'like' : 'like-o'}}"
+          size="30rpx"
+          color="{{innerLiked ? '#FF3B30' : '#FFFFFF'}}"
+        />
+        <text class="card__likeCount">{{innerLikeCount}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,287 @@
+<view class="createpost-root">
+  <view class="post-topbar">
+    <view class="back-hit" bindtap="onBackTap">
+      <text class="back-text">返回</text>
+    </view>
+    <text class="topbar-title">创建活动</text>
+    <view class="topbar-right"></view>
+  </view>
+
+  <scroll-view class="page-scroll" scroll-y="true" enhanced="true" show-scrollbar="false">
+    <view class="card hero-card">
+      <view class="hero-swiper-wrap">
+        <block wx:if="{{hasImages}}">
+          <swiper
+            class="hero-swiper"
+            indicator-dots="true"
+            circular="true"
+            autoplay="false"
+            current="0"
+          >
+            <block wx:for="{{previewImages}}" wx:key="url">
+              <swiper-item>
+                <image class="hero-image" src="{{item.url}}" mode="aspectFill" />
+              </swiper-item>
+            </block>
+          </swiper>
+        </block>
+
+        <block wx:else>
+          <view class="hero-placeholder">
+            <text class="hero-placeholder-text">上传活动图片后会显示在这里</text>
+          </view>
+        </block>
+      </view>
+
+      <view class="card-divider"></view>
+
+      <view class="upload-area">
+        <view class="section-mini-title">上传图片（上限4张）</view>
+        <van-uploader
+          file-list="{{fileList}}"
+          max-count="{{maxCount}}"
+          max-size="{{maxSize}}"
+          multiple
+          bind:before-read="beforeRead"
+          bind:after-read="afterRead"
+          bind:delete="onDelete"
+          bind:oversize="onOversize"
+        />
+      </view>
+    </view>
+
+    <view class="card info-card">
+      <view class="setting-row" bindtap="onOpenTagPicker">
+        <view class="setting-left">
+          <text class="setting-title">添加标签</text>
+          <text class="setting-sub">{{tagsDisplay}}</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+
+      <view class="setting-divider"></view>
+
+      <view class="setting-row" bindtap="onOpenCalendar">
+        <view class="setting-left">
+          <text class="setting-title">持续时间</text>
+          <text class="setting-sub">{{dateText}}</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+
+      <view class="setting-divider"></view>
+
+      <view class="setting-row" bindtap="onTapStartTimeRow">
+        <view class="setting-left">
+          <text class="setting-title">开始时间</text>
+          <text class="setting-sub">{{startTimeDisplay}}</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+
+      <view class="setting-divider"></view>
+
+      <view class="setting-row" bindtap="onTapEndTimeRow">
+        <view class="setting-left">
+          <text class="setting-title">结束时间</text>
+          <text class="setting-sub">{{endTimeDisplay}}</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+
+      <view class="setting-divider"></view>
+
+      <view class="setting-row" bindtap="onTapRecruitRow">
+        <view class="setting-left">
+          <text class="setting-title">招募人数</text>
+          <text class="setting-sub">{{recruitDisplay}}</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="content-card">
+      <view class="content-label">活动标题</view>
+      <view class="form-box form-box--title">
+        <input
+          class="form-input"
+          placeholder="请输入活动标题，最多20字"
+          placeholder-class="dark-placeholder"
+          maxlength="20"
+          value="{{title}}"
+          bindinput="onTitleInput"
+        />
+      </view>
+
+      <view class="content-gap"></view>
+
+      <view class="content-label">正文</view>
+      <view class="form-box form-box--desc">
+        <textarea
+          class="form-textarea form-textarea--desc"
+          placeholder="请输入正文内容，最多400字"
+          placeholder-class="dark-placeholder"
+          maxlength="400"
+          value="{{content}}"
+          auto-height="false"
+          disable-scroll="false"
+          fixed="false"
+          cursor-spacing="24"
+          show-confirm-bar="false"
+          adjust-position="true"
+          bindinput="onContentInput"
+        ></textarea>
+      </view>
+    </view>
+
+    <view class="card bottom-card">
+      <view class="map-preview">
+        <image
+          wx:if="{{mapImageUrl}}"
+          class="map-image"
+          src="{{mapImageUrl}}"
+          mode="aspectFill"
+        />
+
+        <view wx:elif="{{locationText}}" class="map-selected">
+          <text class="map-selected-title">正在加载地图...</text>
+          <text class="map-selected-text">{{locationText}}</text>
+        </view>
+
+        <view wx:else class="map-placeholder">
+          <text class="map-placeholder-text">请粘贴 Google Maps 地址</text>
+        </view>
+      </view>
+
+      <view class="address-row">
+        <view class="address-main">
+          <text class="address-label">地址:</text>
+          <textarea
+            class="address-input"
+            value="{{locationDisplay}}"
+            placeholder="请粘贴 Google Maps 地址"
+            auto-height
+            show-confirm-bar="{{false}}"
+            cursor-spacing="24"
+            bindinput="onLocationInput"
+          ></textarea>
+        </view>
+        <view class="address-action" bindtap="onPasteLocation">粘贴</view>
+      </view>
+
+      <view class="group-block">
+        <view class="group-head">
+          <text class="group-title">加群码</text>
+          <text class="group-sub">{{inviteDisplay}}</text>
+        </view>
+      </view>
+
+      <van-uploader
+        file-list="{{inviteFileList}}"
+        max-count="1"
+        max-size="{{maxSize}}"
+        bind:before-read="beforeRead"
+        bind:after-read="onInviteAfterRead"
+        bind:delete="onInviteDelete"
+        bind:oversize="onOversize"
+      />
+    </view>
+
+    <view class="submit-wrap">
+      <mf-button
+        text="创建活动"
+        bg="#16c35b"
+        color="#ffffff"
+        radius="24rpx"
+        height="96rpx"
+        fontSize="34rpx"
+        bind:tap="onSubmit"
+      />
+    </view>
+  </scroll-view>
+
+  <van-popup
+    show="{{showTagPicker}}"
+    position="bottom"
+    round
+    custom-style="height: 72vh; background: rgb(33,33,33);"
+    bind:close="onCloseTagPicker"
+  >
+    <view class="tag-popup">
+      <view class="tag-popup-header">
+        <text class="tag-popup-title">选择标签</text>
+        <text class="tag-popup-close" bindtap="onCloseTagPicker">关闭</text>
+      </view>
+
+      <view class="tag-toolbar">
+        <text class="tag-toolbar-text">已选 {{selectedTags.length}} / {{tagMax}}</text>
+        <view class="tag-toolbar-actions">
+          <text class="toolbar-btn" bindtap="onClearTags">清空</text>
+        </view>
+      </view>
+
+      <view class="tag-list">
+        <block wx:for="{{filteredTags}}" wx:key="id">
+          <view
+            class="tag-chip {{item.selected ? 'tag-chip-active' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onToggleTag"
+          >
+            {{item.name}}
+          </view>
+        </block>
+      </view>
+
+      <view class="tag-confirm">
+        <mf-button
+          text="确定"
+          bg="#ffffff"
+          color="#000000"
+          radius="22rpx"
+          height="84rpx"
+          fontSize="30rpx"
+          bind:tap="onConfirmTags"
+        />
+      </view>
+    </view>
+  </van-popup>
+
+  <van-calendar
+    show="{{showCalendar}}"
+    type="range"
+    min-date="{{minDate}}"
+    max-date="{{maxDate}}"
+    bind:close="onCloseCalendar"
+    bind:confirm="onConfirmCalendar"
+  />
+
+  <van-popup
+    show="{{showTimePicker}}"
+    position="bottom"
+    round
+    bind:close="onCloseTimePicker"
+  >
+    <van-picker
+      show-toolbar
+      title="{{timePickerTitle}}"
+      columns="{{timeColumns}}"
+      bind:cancel="onCloseTimePicker"
+      bind:confirm="onConfirmTimePicker"
+    />
+  </van-popup>
+
+  <van-popup
+    show="{{showRecruitPicker}}"
+    position="bottom"
+    round
+    bind:close="onCloseRecruitPicker"
+  >
+    <van-picker
+      show-toolbar
+      title="选择招募人数"
+      columns="{{recruitColumns}}"
+      bind:cancel="onCloseRecruitPicker"
+      bind:confirm="onConfirmRecruitPicker"
+    />
+  </van-popup>
+</view>

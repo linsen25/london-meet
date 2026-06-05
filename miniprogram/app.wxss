@@ -1,0 +1,11 @@
+@import '@vant/weapp/common/index.wxss';
+
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    Segoe UI, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei',
+    sans-serif;
+  /* Prevent remote iconfont fetch */
+  --van-icon-font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue',
+    Helvetica, Segoe UI, Arial, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft Yahei', sans-serif;
+}

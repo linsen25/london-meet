@@ -1,0 +1,107 @@
+<view class="post-root">
+  <!-- 顶部栏 -->
+  <view class="post-topbar">
+    <view class="back-hit" bindtap="onBackTap">
+      <text class="back-text">返回</text>
+    </view>
+    <text class="topbar-title">活动详情</text>
+    <view class="topbar-right"></view>
+  </view>
+
+  <!-- 滚动内容 -->
+  <scroll-view class="post-scroll" scroll-y="true" enhanced="true">
+    <view class="post-scroll-inner">
+
+      <!-- ① 详情大块：轮播图 + 标题 + 描述 -->
+      <view class="post-shell">
+        <swiper
+          class="post-swiper"
+          indicator-dots="true"
+          circular="true"
+          autoplay="false"
+          bindtouchstart="onSwiperTouchStart"
+          bindtouchend="onSwiperTouchEnd"
+          bindtouchcancel="onSwiperTouchEnd"
+        >
+          <swiper-item wx:for="{{images}}" wx:key="*this">
+            <image class="swiper-img" src="{{item}}" mode="aspectFill" />
+          </swiper-item>
+        </swiper>
+
+        <view class="post-title">{{title}}</view>
+        <view class="post-desc">{{desc}}</view>
+      </view>
+
+      <!-- ② 进度条：单独一个 container（单层） -->
+      <view class="post-shell post-shell--progress">
+        <view class="progress-row-1">
+          <view class="progress-track">
+            <view
+              class="progress-fill"
+              style="width: {{Math.round((joinedCount/totalCount)*100)}}%;"
+            ></view>
+          </view>
+          <text class="progress-percent">
+            {{Math.round((joinedCount/totalCount)*100)}}%
+          </text>
+        </view>
+
+        <view class="progress-row-2">
+          <text class="progress-meta">{{joinedCount}}/{{totalCount}} 人</text>
+          <text class="progress-meta">{{remainText}}</text>
+        </view>
+      </view>
+
+      <!-- ③ 地址大块：先地图再复制地址 -->
+      <view class="post-shell">
+        <image
+          class="map-preview"
+          src="{{mapImgUrl}}"
+          mode="aspectFill"
+          bindtap="onPreviewMap"
+        />
+
+        <view class="post-address" bindtap="onCopyAddress">
+          <text class="addr-label">地址：</text>
+          <text class="addr-text">{{address}}</text>
+          <text class="addr-copy">复制</text>
+        </view>
+      </view>
+
+      <!-- ④ ✅ 报名按钮：和进度条同宽同壳，不塌、不被挡、可点击 -->
+        <mf-button
+          class="apply-btn"
+          text="{{applyTexts[applyStage]}}"
+          bg="{{applyStage === 1 ? '#FF3B30' : '#07C160'}}"
+          color="#FFFFFF"
+          height="96rpx"
+          radius="28rpx"
+          fontSize="32rpx"
+          bind:tap="onApply"
+        />
+
+
+    </view>
+  </scroll-view>
+
+  <van-popup
+  show="{{showGroupPopup}}"
+  round
+  position="bottom"
+  lock-scroll
+  custom-style="padding: 18px 16px 22px; background: rgb(46,46,46);"
+  bind:close="onCloseGroupPopup"
+>
+  <!-- 右上角关闭按钮 -->
+  <view class="popup-x" bindtap="onCloseGroupPopup">✕</view>
+
+  <view class="popup-title">加入微信群</view>
+  <view class="popup-sub">请扫描二维码加入群聊，祝您活动愉快</view>
+
+
+    <image class="qr-img" mode="aspectFit" src="{{groupQrUrl}}" />
+
+
+  <view class="popup-hint">若二维码过期，请联系发起人更新</view>
+</van-popup>
+</view>

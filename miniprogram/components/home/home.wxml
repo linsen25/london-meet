@@ -1,0 +1,278 @@
+<scroll-view class="home-root" scroll-y="true">
+  <view class="home-page">
+    <view
+      class="home-gesture-strip home-gesture-strip--overlay"
+      bindtouchstart="passTouchStart"
+      bindtouchmove="passTouchMove"
+      bindtouchend="passTouchEnd"
+      bindtouchcancel="passTouchCancel"
+    ></view>
+
+    <view class="home-stack">
+
+      <!-- =========================
+           OUTER 1：个人主页头图卡片
+           ========================= -->
+      <mf-shell
+        minH="{{threeRowH}}"
+        bg="#2E2E2E"
+        radius="18rpx"
+        padding="0"
+        shadow
+      >
+        <view
+  class="profile-hero"
+  style="height: {{threeRowH}}; background-image: url({{profile.coverUrl}});"
+>
+          <!-- 左上角：更多（保留） -->
+          <view class="profile-more" bindtap="onTapMore">
+            <view class="more-line"></view>
+            <view class="more-line"></view>
+            <view class="more-line"></view>
+          </view>
+
+          <!-- 右上角：先不做扫码/分享（你说不要） -->
+
+          <!-- 内容区 -->
+          <view class="profile-body">
+
+            <!-- 头像 + 名字 + ID -->
+            <view class="profile-top">
+              <view class="profile-avatar">
+                <image
+                  class="avatar-img"
+                  src="{{profile.avatarUrl}}"
+                  mode="aspectFill"
+                />
+              </view>
+
+              <view class="profile-top-right">
+                <view class="profile-name">{{profile.name}}</view>
+                <view class="profile-id-row">
+                  <text class="profile-id">rednote ID：{{profile.redId}}</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 个性签名 -->
+            <view class="profile-motto">{{profile.motto}}</view>
+
+            <!-- 年龄/地区 pills -->
+            <view class="profile-pills">
+              <view class="pill">Age {{profile.age}}</view>
+              <view class="pill">{{profile.region}}</view>
+            </view>
+
+            <!-- 统计 + 编辑 -->
+            <view class="profile-bottom">
+              <view class="stats">
+                <view class="stat">
+                  <view class="stat-num">{{profile.stats.myEvents}}</view>
+                  <view class="stat-lbl">我的活动</view>
+                </view>
+                <view class="stat">
+                  <view class="stat-num">{{profile.stats.ongoing}}</view>
+                  <view class="stat-lbl">活动中</view>
+                </view>
+                <view class="stat">
+                  <view class="stat-num">{{profile.stats.likes}}</view>
+                  <view class="stat-lbl">点赞</view>
+                </view>
+              </view>
+
+              <view class="edit-wrap">
+                <mf-button
+                  class="edit-btn"
+                  text="Edit Profile"
+                  bg="rgb(46,46,46)"
+                  color="#FFFFFF"
+                  height="72rpx"
+                  radius="9999rpx"
+                  fontSize="28rpx"
+                />
+              </view>
+            </view>
+
+          </view>
+        </view>
+      </mf-shell>
+
+      <!-- ✅ 下面三块（你原来的 template 保留，先用） -->
+
+      <mf-template
+        rows="1"
+        density="md"
+        align="left"
+        bg="rgb(46,46,46)"
+        bind:rowtap="onTapPendingReview"
+      >
+        <view slot="left" class="ico">🕒</view>
+        <view class="mid">
+          <view class="t1">待审核</view>
+          <view class="t2">审核报名成员</view>
+        </view>
+        <view slot="right" class="arrow">›</view>
+      </mf-template>
+
+      <mf-template
+        rows="1"
+        density="md"
+        align="left"
+        bg="rgb(46,46,46)"
+        bind:rowtap="onTapPendingReview"
+      >
+        <view slot="left" class="ico">📊</view>
+        <view class="mid">
+          <view class="t1">我的面板</view>
+          <view class="t2">别人眼中的我似星辰</view>
+        </view>
+        <view slot="right" class="arrow">›</view>
+      </mf-template>
+
+      <!-- =========================
+           OUTER 2（你原来的占位先留着）
+           ========================= -->
+      <!-- Outer2: 活动列表（Segment + 瀑布流） -->
+      <mf-shell
+        class="outer2-shell"
+        minH="{{sevenHalfRowH}}"
+        bg="rgb(46,46,46)"
+        radius="18rpx"
+        padding="0"
+        gap="0"
+        shadow
+        layout="stack"
+      >
+        <view class="outer2-inner">
+          <!-- 顶部 Segment -->
+          <view class="outer2-seg">
+            <mf-segment-tabs
+              class="outer2-seg-tabs"
+              options="{{outer2Tabs}}"
+              value="{{outer2TabValue}}"
+              height="96rpx"
+              pad="8rpx"
+              radius="9999rpx"
+              bg="#000000"
+              thumbBg="#FFFFFF"
+              textColor="#FFFFFF"
+              activeTextColor="#000000"
+              fontWeight="{{700}}"
+              fontSize="32rpx"
+              bind:change="onOuter2TabChange"
+            />
+          </view>
+
+          <!-- 活动中：瀑布流 -->
+          <scroll-view
+            wx:if="{{outer2TabValue === 'ongoing'}}"
+            class="outer2-waterfall"
+            scroll-y="true"
+            enhanced="true"
+          >
+            <view class="outer2-masonry">
+              <view
+                class="m-item"
+                wx:for="{{outer2Posts}}"
+                wx:key="_id"
+              >
+                <card
+                  data="{{item}}"
+                  bind:tapcard="onTapCard"
+                  bind:likechange="onOuter2LikeChange"
+                />
+              </view>
+            </view>
+          </scroll-view>
+
+          <!-- 待评价：一行一行列表 -->
+          <view
+            wx:if="{{outer2TabValue === 'review'}}"
+            class="outer2-review-wrap"
+          >
+            <!-- 二级 segment -->
+            <view class="outer2-seg outer2-seg--sub">
+              <mf-segment-tabs
+                class="outer2-seg-tabs"
+                options="{{outer2ReviewTabs}}"
+                value="{{outer2ReviewTabValue}}"
+                height="88rpx"
+                pad="8rpx"
+                radius="9999rpx"
+                bg="#000000"
+                thumbBg="#FFFFFF"
+                textColor="#FFFFFF"
+                activeTextColor="#000000"
+                fontWeight="{{700}}"
+                fontSize="28rpx"
+                bind:change="onOuter2ReviewTabChange"
+              />
+            </view>
+
+            <!-- 评价活动 -->
+            <view
+              wx:if="{{outer2ReviewTabValue === 'event'}}"
+              class="outer2-review-list"
+            >
+              <mf-template
+                wx:for="{{reviewEventPosts}}"
+                wx:key="_id"
+                rows="1"
+                density="md"
+                align="left"
+                bg="rgb(60,60,60)"
+                bind:rowtap="onTapReviewEventItem"
+                data-id="{{item._id}}"
+              >
+                <view slot="left">
+                  <image class="review-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+                </view>
+
+                <view class="mid">
+                  <view class="t1">{{item.title}}</view>
+                  <view class="t2">
+                    <view>开始：{{item.startText}}</view>
+                    <view>结束：{{item.endText}}</view>
+                  </view>
+                </view>
+
+                <view slot="right" class="arrow arrow--white">›</view>
+              </mf-template>
+            </view>
+
+            <!-- 评价成员 -->
+            <view
+              wx:if="{{outer2ReviewTabValue === 'member'}}"
+              class="outer2-review-list"
+            >
+              <mf-template
+                wx:for="{{reviewMemberPosts}}"
+                wx:key="_id"
+                rows="1"
+                density="md"
+                align="left"
+                bg="rgb(60,60,60)"
+                bind:rowtap="onTapReviewMemberItem"
+                data-id="{{item._id}}"
+              >
+                <view slot="left">
+                  <image class="review-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+                </view>
+
+                <view class="mid">
+                  <view class="t1">{{item.name}}</view>
+                  <view class="t2">
+                    <view>{{item.scoreText}}</view>
+                    <view>{{item.speedText}}</view>
+                  </view>
+                </view>
+
+                <view slot="right" class="arrow arrow--white">›</view>
+              </mf-template>
+            </view>
+          </view>
+        </view>
+      </mf-shell>
+    </view>
+  </view>
+</scroll-view>

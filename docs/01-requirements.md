@@ -1,216 +1,128 @@
-# 系统需求文档 | System Requirements Document
-
-## 1. 项目概述 | Project Overview
-本项目是一个活动发布与双向互评系统，用户可发布活动、报名参与、评论互动、收藏活动、接收通知，并在活动结束后进行参与者与发起者之间的多维度双向评价。活动发布后不可编辑，仅可删除重发，保证信息真实性。
-
-This project is an activity release and mutual evaluation system. Users can post activities, sign up, comment, collect, receive notifications, and rate each other after activities. Published activities cannot be edited, only deleted to ensure authenticity.
-
----
-
-## 2. 功能需求 | Functional Requirements
-
-### 2.1 用户模块 | User Module
-- 用户注册
-- 用户登录
-- 个人信息查看与修改
-- 头像上传
-- 密码修改
-
-- User registration
-- User login
-- View & modify profile
-- Avatar upload
-- Password change
-
-### 2.2 活动（帖子）模块 | Activity (Post) Module
-- 发布活动（标题、内容、时间、地点）
-- 查看活动列表
-- 查看活动详情
-- 删除自己发布的活动
-- 活动状态管理（报名中 / 进行中 / 已结束）
-- 不支持编辑活动
-
-- Release activity
-- View activity list
-- View activity detail
-- Delete own activities
-- Activity status management
-- No activity editing allowed
-
-### 2.3 报名模块 | Sign-up Module
-- 用户报名活动
-- 取消报名
-- 活动签到
-- 查看报名列表
-
-- Sign up for activities
-- Cancel sign-up
-- Check in
-- View sign-up list
-
-### 2.4 评论与回复模块 | Comment & Reply Module
-- 发布评论
-- 删除自己的评论
-- 查看评论列表
-- 回复他人评论
-- 删除自己的回复
-- 查看回复列表
-
-- Post comments
-- Delete own comments
-- View comment list
-- Reply to others' comments
-- Delete own replies
-- View reply list
-
-### 2.5 收藏模块 | Collection Module
-- 收藏活动
-- 取消收藏
-- 查看我的收藏
-
-- Collect activities
-- Uncollect activities
-- View my collections
-
-### 2.6 消息通知模块 | Notification Module
-- 活动报名通知
-- 评论与回复通知
-- 互评通知
-- 未读消息计数
-- 标记已读
-
-- Sign-up notifications
-- Comment & reply notifications
-- Evaluation notifications
-- Unread message count
-- Mark as read
-
-### 2.7 双向评价模块 | Mutual Evaluation Module
-#### 参与者评价发起者
-- 服务态度评分
-- 活动安排评分
-- 守时情况评分
-- 文字评价
-
-#### 发起者评价参与者
-- 守时评分
-- 遵守规则评分
-- 团队协作评分
-- 文字评价
-
-#### Participant to Organizer
-- Service score
-- Arrangement score
-- Punctuality score
-- Comment
-
-#### Organizer to Participant
-- Punctuality score
-- Rule compliance score
-- Team cooperation score
-- Comment
-
----
-
-## 3. 非功能需求 | Non-Functional Requirements
-
-### 3.1 性能需求 | Performance
-- 接口响应时间 < 500ms
-- 支持 500+ 在线用户
-- 列表页面使用 Redis 缓存加速
-
-- Response time < 500ms
-- Support 500+ online users
-- Use Redis for list caching
-
-### 3.2 安全性需求 | Security
-- 用户密码加密存储
-- 接口权限校验
-- 防重复提交
-- 数据越权访问控制
-
-- Password encryption
-- API permission check
-- Anti-duplicate submission
-- Data access control
-
-### 3.3 易用性需求 | Usability
-- 界面简洁清晰
-- 操作流程简单
-- 提示信息明确
-- 移动端友好
-
-- Simple UI
-- Easy operation
-- Clear messages
-- Mobile friendly
-
-### 3.4 可扩展性需求 | Scalability
-- 前后端分离架构
-- 模块化开发
-- 便于后续功能扩展
-
-- Separated architecture
-- Modular development
-- Easy to extend
-
----
-
-## 4. 运行环境需求 | System Environment
-
-### 后端 | Backend
-- Java 8+
-- Spring Boot
-- MySQL 5.7+
-- Redis
-- Maven
-
-### 前端 | Frontend
-- Vue.js 3
-- Element Plus
-- Chrome / Edge 浏览器
-
-### 服务器 | Server
-- JDK 1.8+
-- MySQL
-- Redis
-- Nginx
-
----
-
-## 5. 业务规则 | Business Rules
-- 活动发布后不可修改，只能删除重发
-- 只有登录用户可以发布评论
-- 用户只能删除自己发布的评论和回复
-- 只有活动参与者才能评价发起者
-- 只有发起者才能评价参与者
-- 每个用户对同一个活动只能评价一次
-- 未报名用户不能评价、不能签到
-- 活动结束后才能进行互评
-
-- Activities cannot be edited after release
-- Only logged-in users can post comments
-- Users can only delete their own comments & replies
-- Only participants can rate organizers
-- Only organizers can rate participants
-- One evaluation per user per activity
-- Unregistered users cannot evaluate
-- Mutual evaluation allowed only after activity ends
-
----
-
-## 6. 项目目标 | Project Goals
-- 实现活动发布、参与、互动、评价完整闭环
-- 提供稳定、流畅、易用的操作体验
-- 保证数据安全与系统性能
-- 完成前后端分离项目开发与部署
-
-- Achieve complete activity & evaluation closed-loop
-- Provide stable & smooth user experience
-- Ensure data security & performance
-- Complete development & deployment
-
----
-
-## Author
-Linsen Liu
+活动发布与双向互评系统 - 后端功能需求文档
+一、用户模块功能
+用户注册
+接收参数：用户名、密码、确认密码、邮箱
+校验逻辑：用户名 / 密码非空（密码长度≥6）、邮箱格式正确、用户名 / 邮箱唯一
+处理流程：密码加密存储（使用 BCrypt）、生成用户 ID、返回注册结果
+用户登录
+接收参数：用户名 / 邮箱、密码
+校验逻辑：账号存在、密码匹配
+处理流程：生成 JWT 令牌（包含用户 ID、过期时间 2 小时）、返回令牌 + 用户基本信息
+个人信息查看与修改
+查看：通过用户 ID 查询个人信息（昵称、头像 URL、邮箱、学校、年级）
+修改：接收昵称、学校、年级参数，仅允许修改本人信息
+头像上传
+接收参数：MultipartFile 类型头像文件
+处理流程：校验文件格式（jpg/png）、大小（≤5MB），上传至服务器 / 云存储，更新用户头像 URL
+密码修改
+接收参数：原密码、新密码、确认新密码
+校验逻辑：原密码正确、新密码与确认密码一致、新密码与原密码不同
+处理流程：加密新密码并更新存储
+二、活动模块功能
+发布活动
+接收参数：标题、内容、开始时间、结束时间、地点、最大参与人数
+校验逻辑：所有参数非空、开始时间晚于当前时间、结束时间晚于开始时间
+处理流程：生成活动 ID，设置发布者 ID、初始状态为 “报名中”，保存至数据库
+查看活动列表
+接收参数：页码、每页条数、可选搜索关键词（标题 / 地点）
+处理流程：若关键词存在则按标题 / 地点模糊查询，否则查询所有活动；按发布时间倒序排序；使用 Redis 缓存热门活动列表（报名人数＞50），缓存时效 2 小时
+查看活动详情
+接收参数：活动 ID
+处理流程：查询活动基本信息（含发布者昵称、头像）、当前报名人数、剩余名额，关联查询发布者信息
+删除自己发布的活动
+接收参数：活动 ID
+校验逻辑：活动存在、当前用户为活动发布者、活动状态为 “报名中”（进行中 / 已结束活动不允许删除）
+处理流程：删除活动记录，同时删除关联的报名、评论数据
+活动状态管理
+自动状态切换：
+当系统时间达到活动开始时间，状态从 “报名中” 切换为 “进行中”
+当系统时间达到活动结束时间，状态从 “进行中” 切换为 “已结束”
+处理方式：定时任务（每 5 分钟执行一次）扫描活动表，更新符合条件的活动状态
+三、报名模块功能
+用户报名活动
+接收参数：活动 ID
+校验逻辑：活动存在且状态为 “报名中”、当前用户未报名该活动、活动未达最大参与人数
+处理流程：创建报名记录（活动 ID、用户 ID、报名时间），更新活动当前报名人数，向活动发布者发送 “新用户报名” 通知
+取消报名
+接收参数：活动 ID
+校验逻辑：活动存在且状态为 “报名中”、当前用户已报名该活动
+处理流程：删除报名记录，更新活动当前报名人数，向活动发布者发送 “用户取消报名” 通知
+活动签到
+接收参数：活动 ID
+校验逻辑：活动存在且状态为 “进行中”、当前用户已报名该活动、未签到过
+处理流程：更新报名记录的签到状态（设为 “已签到”）
+查看报名列表
+接收参数：活动 ID
+校验逻辑：当前用户为活动发布者
+处理流程：查询该活动的所有报名用户信息（昵称、头像、签到状态、报名时间），按报名时间排序
+四、评论与回复模块功能
+发布评论
+接收参数：活动 ID、评论内容
+校验逻辑：用户已登录、活动存在、评论内容非空（长度≤500 字）
+处理流程：生成评论 ID，保存评论记录（活动 ID、用户 ID、内容、发布时间），向活动发布者发送 “新评论” 通知
+删除自己的评论
+接收参数：评论 ID
+校验逻辑：评论存在、当前用户为评论发布者
+处理流程：删除评论记录，同时删除该评论下的所有回复
+查看评论列表
+接收参数：活动 ID、页码、每页条数
+处理流程：查询活动下的所有评论，按发布时间倒序排序，关联查询评论者昵称、头像
+回复他人评论
+接收参数：评论 ID、回复内容、被回复用户 ID
+校验逻辑：用户已登录、评论存在、回复内容非空（长度≤500 字）
+处理流程：生成回复 ID，保存回复记录（评论 ID、用户 ID、被回复用户 ID、内容、发布时间），向被回复用户发送 “新回复” 通知
+删除自己的回复
+接收参数：回复 ID
+校验逻辑：回复存在、当前用户为回复发布者
+处理流程：删除回复记录
+查看回复列表
+接收参数：评论 ID、页码、每页条数
+处理流程：查询评论下的所有回复，按发布时间倒序排序，关联查询回复者昵称、头像
+五、收藏模块功能
+收藏活动
+接收参数：活动 ID
+校验逻辑：用户已登录、活动存在、当前用户未收藏该活动
+处理流程：创建收藏记录（用户 ID、活动 ID、收藏时间）
+取消收藏
+接收参数：活动 ID
+校验逻辑：用户已登录、当前用户已收藏该活动
+处理流程：删除收藏记录
+查看我的收藏
+接收参数：页码、每页条数
+处理流程：查询当前用户收藏的所有活动，按收藏时间倒序排序，关联查询活动基本信息
+六、消息通知模块功能
+通知类型与触发场景
+活动报名通知：用户报名活动时，发送给活动发布者
+评论与回复通知：用户发布评论时发送给活动发布者，发布回复时发送给被回复用户
+互评通知：活动结束后，向需要评价他人的用户发送通知（如参与者需评价发起者，发起者需评价参与者）
+未读消息计数
+处理流程：查询当前用户未读通知的总数，返回给前端展示
+标记已读
+单条标记：接收通知 ID，将该通知状态更新为 “已读”
+全部标记：将当前用户所有未读通知状态更新为 “已读”
+七、双向评价模块功能
+评价触发条件
+活动状态为 “已结束”
+评价者为活动参与者 / 发起者（参与者评价发起者，发起者评价参与者）
+评价者已签到（参与者需签到才能评价发起者）
+评价者未对该对象评价过
+参与者评价发起者
+接收参数：活动 ID、服务态度评分（1-5 星）、活动安排评分（1-5 星）、守时情况评分（1-5 星）、文字评价（可选，长度≤500 字）
+处理流程：保存评价记录，关联活动 ID、参与者 ID、发起者 ID
+发起者评价参与者
+接收参数：活动 ID、参与者 ID、守时评分（1-5 星）、遵守规则评分（1-5 星）、团队协作评分（1-5 星）、文字评价（可选，长度≤500 字）
+处理流程：保存评价记录，关联活动 ID、发起者 ID、参与者 ID
+评价唯一性校验
+同一用户对同一活动的同一对象（发起者 / 参与者）只能评价一次
+八、非功能需求实现
+性能优化
+接口响应时间＜500ms：通过索引优化（活动表按发布时间、状态建索引）、Redis 缓存热门活动列表实现
+支持 500 + 在线用户：通过数据库连接池配置（最大连接数 200）、Web Socket 连接池优化实现
+安全性保障
+用户密码加密存储：使用 Spring Security 的 BCryptPasswordEncoder
+接口权限校验：所有业务接口需携带 JWT 令牌，通过拦截器验证令牌有效性及用户身份
+防重复提交：关键接口（如报名、评价）使用 Redis 分布式锁，按用户 ID + 活动 ID 生成锁键，有效期 3 秒
+数据越权访问控制：通过 SQL 条件过滤（如查询评论时加 “user_id = 当前用户 ID”）确保用户只能操作本人数据
+定时任务
+活动状态自动切换：使用 Spring Scheduler，每 5 分钟执行一次任务，更新活动状态
+Redis 缓存预热：每日凌晨 2 点执行，将热门活动列表加载到 Redis 缓存

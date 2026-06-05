@@ -44,3 +44,14 @@ management:
     web:
       exposure:
         include: health,info
+
+jwt:
+  secret-key: londonmeetjwtsecretkeylondonmeetjwtsecretkey
+  expiration: 604800000
+
+wechat:
+  # Keep true while testing the backend without real mini program pages.
+  # With mock enabled, pass either openid directly or pass code such as "mock:test-user".
+  mock-enabled: ${WECHAT_MOCK_ENABLED:true}
+  app-id: ${WECHAT_APP_ID:}
+  secret: ${WECHAT_APP_SECRET:}

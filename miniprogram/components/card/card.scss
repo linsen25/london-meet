@@ -1,0 +1,82 @@
+.card {
+  grid-column: span 2;
+  background: #222222;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.18);
+  min-height: calc(100vh / 8 * 3);
+}
+
+.card__cover {
+  height: calc(100vh / 8 * 2.5);
+  background: #222222;
+  overflow: hidden;
+}
+
+.card__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.card__img.is-loaded {
+  opacity: 1;
+}
+
+.card__body {
+  padding: 18rpx 16rpx 16rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  background: #222222;
+}
+
+.card__title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.card__bottom {
+  margin-top: 10rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.card__avatar {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  flex: 0 0 auto;
+}
+
+.card__progress {
+  flex: 1;
+  min-width: 0;
+}
+
+.card__likes {
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  color: #FFFFFF;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.card__likeCount {
+  font-size: 22rpx;
+  line-height: 1;
+  color: #FFFFFF;
+}

@@ -1,0 +1,13 @@
+{
+  "usingComponents": {
+    "activity-view": "/components/activity/activity",
+    "home-view": "/components/home/home",
+    "mf-button": "/components/mf-button/index",
+    "post-view": "/components/post-view/index",
+    "createpost-view": "/components/createpost-view/index",
+    "pending-review": "/components/pending-review/index",
+    "review-rate": "/components/review-rate/rate",
+    "search": "/components/search/search",
+    "van-icon": "@vant/weapp/icon/index"
+  }
+}

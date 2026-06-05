@@ -1,0 +1,51 @@
+<view class="review-root">
+
+  <!-- 顶部栏：左上 chevron + 标题都可点击返回 -->
+  <view class="review-topbar">
+    <view class="back-wrap" bindtap="onBack">
+      <text class="back-chevron">‹</text>
+      <text class="back-title">待审核</text>
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="review-list">
+    <mf-template
+      wx:for="{{reviewers}}"
+      wx:key="id"
+      rows="1"
+      density="md"
+      align="left"
+      bg="rgb(46,46,46)"
+    >
+      <!-- 左：圆形头像 -->
+      <view slot="left">
+        <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+      </view>
+
+      <!-- 中：微信名 + 评分 -->
+      <view class="mid">
+        <view class="t1">{{item.name}}</view>
+        <view class="t2">
+          <view>综合评分：{{item.score}}/100</view>
+          <view>时效评分：{{item.speed}}/100</view>
+        </view>
+      </view>
+
+      <!-- 右：状态文字 + iPhone 风格 switch -->
+      <view slot="right" class="switch-wrap">
+        <view class="state-text {{item.approved ? 'ok' : 'no'}}">
+          {{item.approved ? '已通过' : '未通过'}}
+        </view>
+
+        <switch
+          checked="{{item.approved}}"
+          bindchange="onSwitch"
+          data-index="{{index}}"
+          color="#07C160"
+        />
+      </view>
+    </mf-template>
+  </view>
+
+</view>
