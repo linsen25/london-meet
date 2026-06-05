@@ -50,12 +50,14 @@ Component({
     borderWidth: { type: String, value: "1rpx" },
 
     // ✅ 阈值（按你要求）
-    greenAtOrAbove: { type: Number, value: 60 },
-    yellowAtOrAbove: { type: Number, value: 30 },
+    greenAtOrAbove: { type: Number, value: 75 },
+    yellowAtOrAbove: { type: Number, value: 50 },
+    orangeAtOrAbove: { type: Number, value: 25 },
 
     // ✅ 三色
     green: { type: String, value: "#07C160" },
-    yellow: { type: String, value: "#F7B500" },
+    yellow: { type: String, value: "#FFD60A" },
+    orange: { type: String, value: "#FF9500" },
     red: { type: String, value: "#FF3B30" },
 
     // ✅ 右侧显示：默认显示百分比
@@ -81,7 +83,7 @@ Component({
   },
 
   observers: {
-    "startAt,endAt,value,minThumbPct,height,radius,trackBg,trackBorder,borderWidth,greenAtOrAbove,yellowAtOrAbove,green,yellow,red,showLabel,labelMode,textColor,endedText,width,customStyle": function () {
+    "startAt,endAt,value,minThumbPct,height,radius,trackBg,trackBorder,borderWidth,greenAtOrAbove,yellowAtOrAbove,orangeAtOrAbove,green,yellow,orange,red,showLabel,labelMode,textColor,endedText,width,customStyle": function () {
       this._rebuildStyles();
       this._tick(Date.now());
     }
@@ -103,6 +105,7 @@ Component({
     _colorForPct(p) {
       if (p >= this.data.greenAtOrAbove) return this.data.green;
       if (p >= this.data.yellowAtOrAbove) return this.data.yellow;
+      if (p >= this.data.orangeAtOrAbove) return this.data.orange;
       return this.data.red;
     },
 

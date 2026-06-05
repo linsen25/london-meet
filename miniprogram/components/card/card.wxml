@@ -30,10 +30,12 @@
           trackBg="rgba(255,255,255,0.18)"
           trackBorder="rgba(255,255,255,0.22)"
           textColor="rgba(255,255,255,0.82)"
-          greenAtOrAbove="{{50}}"
-          yellowAtOrAbove="{{25}}"
+          greenAtOrAbove="{{75}}"
+          yellowAtOrAbove="{{50}}"
+          orangeAtOrAbove="{{25}}"
           green="#07C160"
-          yellow="#FF9500"
+          yellow="#FFD60A"
+          orange="#FF9500"
           red="#FF3B30"
         />
       </view>

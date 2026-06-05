@@ -1,71 +1,35 @@
 const { request } = require("../utils/request");
 
-const USE_MOCK = false;
-const day = 24 * 60 * 60 * 1000;
-
 const ACTIVITY_ENDPOINTS = {
+  create: "/v1/activities",
   list: "/v1/activities",
+  detail: "/v1/activities/:id",
+  apply: "/v1/activities/:id/apply",
+  joinGroup: "/v1/activities/:id/join-group",
   like: "/v1/activities/:id/like"
 };
 
 function normalizePost(raw) {
+  const post = raw || {};
+
   return {
-    _id: raw._id || raw.id,
-    title: raw.title || "未命名活动",
-    authorName: raw.authorName || "",
-    coverUrl: raw.coverUrl || "",
-    avatarUrl: raw.avatarUrl || "",
-    likeCount: Number(raw.likeCount) || 0,
-    liked: !!raw.liked,
-    progressPct: raw.progressPct == null ? raw.progressPercent : raw.progressPct,
-    startAt: Number(raw.startAt) || 0,
-    endAt: Number(raw.endAt) || 0,
-    progressGif: raw.progressGif || ""
+    _id: post._id || post.id,
+    title: post.title || "",
+    authorName: post.authorName || "",
+    coverUrl: post.coverUrl || "",
+    avatarUrl: post.avatarUrl || "",
+    likeCount: Number(post.likeCount) || 0,
+    liked: !!post.liked,
+    progressPct: post.progressPct == null ? post.progressPercent : post.progressPct,
+    startAt: Number(post.startAt) || 0,
+    endAt: Number(post.endAt) || 0,
+    progressGif: post.progressGif || ""
   };
-}
-
-function mockPosts(range) {
-  const now = Date.now();
-  const rangeText = {
-    day: "本日",
-    week: "本周",
-    month: "本月"
-  }[range] || "活动";
-
-  return Array.from({ length: 10 }).map((_, index) => {
-    const n = index + 1;
-    return normalizePost({
-      _id: `${range}-${n}`,
-      title: `${rangeText}活动帖子 ${n}（示例）`,
-      authorName: `User ${n}`,
-      likeCount: 10 + n * 7,
-      liked: false,
-      progressPct: Math.max(8, 100 - n * 8),
-      coverUrl: `https://dummyimage.com/600x800/3a3a3a/ffffff.png&text=${rangeText}-${n}`,
-      avatarUrl: `https://dummyimage.com/100x100/555555/ffffff.png&text=${n}`,
-      startAt: now - day * n,
-      endAt: now + day * (11 - n),
-      progressGif: ""
-    });
-  });
 }
 
 function fetchActivityPosts(params) {
   const { range = "day", page = 1, pageSize = 20, refresh = false } = params || {};
 
-  if (USE_MOCK) {
-    return Promise.resolve({
-      list: mockPosts(range),
-      page,
-      pageSize,
-      hasMore: false
-    });
-  }
-
-  // TODO(api): 请求活动瀑布流列表。
-  // GET /v1/activities?range=day|week|month&page=1&pageSize=20&refresh=1
-  // 返回建议：{ list, page, pageSize, hasMore }
-  // list 单项字段：_id,title,coverUrl,avatarUrl,likeCount,liked,progressPct,startAt,endAt
   return request({
     url: ACTIVITY_ENDPOINTS.list,
     method: "GET",
@@ -81,17 +45,62 @@ function fetchActivityPosts(params) {
   }));
 }
 
+function normalizeActivityDetail(raw) {
+  const detail = raw || {};
+  const images = Array.isArray(detail.imageUrls) ? detail.imageUrls.filter(Boolean) : [];
+
+  return {
+    id: detail.id,
+    title: detail.title || "",
+    content: detail.content || "",
+    authorName: detail.authorName || "",
+    coverUrl: detail.coverUrl || "",
+    imageUrls: images.length ? images : (detail.coverUrl ? [detail.coverUrl] : []),
+    startAt: Number(detail.startAt) || 0,
+    endAt: Number(detail.endAt) || 0,
+    joinedCount: Number(detail.joinedCount) || 0,
+    totalCount: Number(detail.totalCount) || 0,
+    full: !!detail.full,
+    locationText: detail.locationText || "",
+    mapImageUrl: detail.mapImageUrl || "",
+    inviteQrUrl: detail.inviteQrUrl || "",
+    registrationStatus: detail.registrationStatus || "",
+    noticeCode: detail.noticeCode == null ? null : Number(detail.noticeCode)
+  };
+}
+
+function fetchActivityDetail(id) {
+  return request({
+    url: ACTIVITY_ENDPOINTS.detail.replace(":id", id),
+    method: "GET"
+  }).then(normalizeActivityDetail);
+}
+
+function applyActivity(id) {
+  return request({
+    url: ACTIVITY_ENDPOINTS.apply.replace(":id", id),
+    method: "POST"
+  });
+}
+
+function joinActivityGroup(id) {
+  return request({
+    url: ACTIVITY_ENDPOINTS.joinGroup.replace(":id", id),
+    method: "POST"
+  });
+}
+
+function createActivity(payload) {
+  return request({
+    url: ACTIVITY_ENDPOINTS.create,
+    method: "POST",
+    data: payload || {}
+  }).then(normalizePost);
+}
+
 function updateActivityLike(params) {
   const { id, liked } = params || {};
 
-  if (USE_MOCK) {
-    return Promise.resolve({ id, liked });
-  }
-
-  // TODO(api): 请求点赞/取消点赞。
-  // POST /v1/activities/:id/like
-  // body: { liked: true|false }
-  // 返回建议：{ id, liked, likeCount }
   return request({
     url: ACTIVITY_ENDPOINTS.like.replace(":id", id),
     method: "POST",
@@ -101,6 +110,10 @@ function updateActivityLike(params) {
 
 module.exports = {
   ACTIVITY_ENDPOINTS,
+  applyActivity,
+  createActivity,
+  fetchActivityDetail,
   fetchActivityPosts,
+  joinActivityGroup,
   updateActivityLike
 };

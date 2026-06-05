@@ -1,1 +1,6 @@
-com\londonmeet\Main.class
+com\londonmeet\pojo\entity\User$UserBuilder.class
+com\londonmeet\pojo\vo\LoginUserVO$LoginUserVOBuilder.class
+com\londonmeet\pojo\entity\User.class
+com\londonmeet\pojo\dto\request\WechatLoginRequest.class
+com\londonmeet\pojo\Main.class
+com\londonmeet\pojo\vo\LoginUserVO.class

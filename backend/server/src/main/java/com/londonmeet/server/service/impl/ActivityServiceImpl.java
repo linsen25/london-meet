@@ -1,13 +1,26 @@
 package com.londonmeet.server.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.londonmeet.common.exception.BusinessException;
+import com.londonmeet.pojo.dto.request.ActivityCreateRequest;
 import com.londonmeet.pojo.dto.request.ActivityLikeRequest;
 import com.londonmeet.pojo.dto.request.ActivityQueryRequest;
+import com.londonmeet.pojo.dto.request.ActivitySearchRequest;
 import com.londonmeet.pojo.entity.Activity;
+import com.londonmeet.pojo.entity.ActivityRegistration;
+import com.londonmeet.pojo.entity.Tag;
+import com.londonmeet.pojo.entity.User;
+import com.londonmeet.pojo.vo.ActivityDetailVO;
 import com.londonmeet.pojo.vo.ActivityLikeVO;
 import com.londonmeet.pojo.vo.ActivityPageVO;
 import com.londonmeet.pojo.vo.ActivityPostVO;
+import com.londonmeet.pojo.vo.ActivityRegistrationVO;
 import com.londonmeet.server.repository.ActivityRepository;
+import com.londonmeet.server.repository.ActivityRegistrationRepository;
+import com.londonmeet.server.repository.TagRepository;
+import com.londonmeet.server.repository.UserRepository;
+import com.londonmeet.server.security.LoginUser;
 import com.londonmeet.server.service.ActivityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,35 +33,115 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.Instant;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
 
     private static final String STATUS_PUBLISHED = "PUBLISHED";
-
+    private static final List<String> CAPACITY_STATUSES = List.of(
+            ActivityRegistration.STATUS_APPROVED,
+            ActivityRegistration.STATUS_JOINED_GROUP
+    );
+    private static final List<String> CONFLICT_STATUSES = List.of(
+            ActivityRegistration.STATUS_PENDING,
+            ActivityRegistration.STATUS_APPROVED,
+            ActivityRegistration.STATUS_JOINED_GROUP
+    );
     private final ActivityRepository activityRepository;
+    private final ActivityRegistrationRepository activityRegistrationRepository;
+    private final TagRepository tagRepository;
+    private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
+    public ActivityPostVO createActivity(ActivityCreateRequest request, LoginUser loginUser) {
+        if (loginUser == null || loginUser.userId() == null) {
+            throw new BusinessException("Please login before creating an activity.");
+        }
+
+        User creator = userRepository.findById(loginUser.userId())
+                .orElseThrow(() -> new BusinessException("Login user not found."));
+
+        LocalDateTime startAt = toLocalDateTime(request.getStartAt());
+        LocalDateTime endAt = toLocalDateTime(request.getEndAt());
+        if (!endAt.isAfter(startAt)) {
+            throw new BusinessException("Activity end time must be after start time.");
+        }
+
+        List<String> imageUrls = sanitizeList(request.getImageUrls(), 4);
+        String coverUrl = firstText(imageUrls);
+        if (!StringUtils.hasText(coverUrl)) {
+            throw new BusinessException("At least one activity image is required.");
+        }
+
+        List<Long> tagIds = sanitizeTagIds(resolveRequestTagIds(request), 1);
+        if (tagIds.isEmpty()) {
+            throw new BusinessException("At least one activity tag is required.");
+        }
+        List<String> tagNames = resolveTagNames(tagIds);
+        Long tagId = tagIds.get(0);
+
+        if (request.getRecruitCount() == null || request.getRecruitCount() < 1) {
+            throw new BusinessException("Recruit count is required.");
+        }
+
+        if (!StringUtils.hasText(request.getInviteQrUrl())) {
+            throw new BusinessException("Invite QR code is required.");
+        }
+
+        Activity activity = Activity.builder()
+                .title(request.getTitle().trim())
+                .content(request.getContent().trim())
+                .creatorUserId(creator.getId())
+                .authorName(resolveAuthorName(creator))
+                .avatarUrl(creator.getAvatarUrl())
+                .coverUrl(coverUrl)
+                .startAt(startAt)
+                .endAt(endAt)
+                .tagId(tagId)
+                .tagIdsJson(toJson(tagIds))
+                .tagsJson(toJson(tagNames))
+                .recruitCount(normalizeRecruitCount(request.getRecruitCount()))
+                .locationText(request.getLocationText().trim())
+                .mapImageUrl(trimToNull(request.getMapImageUrl()))
+                .imageUrlsJson(toJson(imageUrls))
+                .inviteQrUrl(trimToNull(request.getInviteQrUrl()))
+                .status(STATUS_PUBLISHED)
+                .build();
+
+        return toPostVO(activityRepository.save(activity));
+    }
+
+    @Override
+    @Transactional
     public ActivityPageVO listActivities(ActivityQueryRequest request) {
         String range = normalizeRange(request.getRange());
         int page = normalizePage(request.getPage());
         int pageSize = normalizePageSize(request.getPageSize());
 
-        LocalDate today = LocalDate.now();
-        LocalDateTime rangeStart = today.atStartOfDay();
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDate today = now.toLocalDate();
         LocalDateTime rangeEnd = switch (range) {
             case "week" -> today.plusWeeks(1).plusDays(1).atStartOfDay();
             case "month" -> today.plusMonths(1).plusDays(1).atStartOfDay();
             default -> today.plusDays(1).atStartOfDay();
         };
 
-        Page<Activity> result = activityRepository.findByStatusAndStartAtBeforeAndEndAtAfter(
+        Page<Activity> result = activityRepository.findByStatusAndEndAtAfterAndEndAtBefore(
                 STATUS_PUBLISHED,
+                now,
                 rangeEnd,
-                rangeStart,
                 PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"))
         );
 
@@ -62,6 +155,131 @@ public class ActivityServiceImpl implements ActivityService {
                 .pageSize(pageSize)
                 .hasMore(result.hasNext())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ActivityPageVO searchActivities(ActivitySearchRequest request) {
+        int page = normalizePage(request.getPage());
+        int pageSize = normalizePageSize(request.getPageSize());
+        String keyword = trimToNull(request.getKeyword());
+        List<Long> tagIds = resolveSearchTagIds(request.getTags());
+
+        if (keyword == null && tagIds.isEmpty()) {
+            return ActivityPageVO.builder()
+                    .list(List.of())
+                    .page(page)
+                    .pageSize(pageSize)
+                    .hasMore(false)
+                    .build();
+        }
+
+        Page<Activity> result = activityRepository.searchPublishedActivities(
+                STATUS_PUBLISHED,
+                LocalDateTime.now(),
+                keyword,
+                !tagIds.isEmpty(),
+                tagIds.isEmpty() ? List.of(-1L) : tagIds,
+                PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"))
+        );
+
+        return ActivityPageVO.builder()
+                .list(result.getContent().stream().map(this::toPostVO).toList())
+                .page(page)
+                .pageSize(pageSize)
+                .hasMore(result.hasNext())
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ActivityDetailVO getActivityDetail(Long id, LoginUser loginUser) {
+        Activity activity = activityRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Activity not found."));
+
+        Optional<ActivityRegistration> registration = Optional.empty();
+        if (loginUser != null && loginUser.userId() != null) {
+            registration = activityRegistrationRepository.findByActivityIdAndUserId(id, loginUser.userId());
+        }
+
+        return toDetailVO(activity, registration.orElse(null));
+    }
+
+    @Override
+    @Transactional
+    public ActivityRegistrationVO applyActivity(Long id, LoginUser loginUser) {
+        Long userId = requireUserId(loginUser);
+        Activity activity = activityRepository.findLockedById(id)
+                .orElseThrow(() -> new BusinessException("Activity not found."));
+
+        if (!STATUS_PUBLISHED.equals(activity.getStatus())) {
+            throw new BusinessException("Activity is not available.");
+        }
+        if (activity.getEndAt() != null && !activity.getEndAt().isAfter(LocalDateTime.now())) {
+            throw new BusinessException("Activity has ended.");
+        }
+
+        Optional<ActivityRegistration> existing = activityRegistrationRepository.findByActivityIdAndUserId(id, userId);
+        if (existing.isPresent()) {
+            ActivityRegistration registration = existing.get();
+            if (CONFLICT_STATUSES.contains(registration.getStatus())) {
+                return toRegistrationVO(registration);
+            }
+        }
+
+        if (isFull(activity)) {
+            throw new BusinessException("人员已满");
+        }
+
+        if (activityRegistrationRepository.existsTimeConflict(
+                userId,
+                activity.getStartAt(),
+                activity.getEndAt(),
+                CONFLICT_STATUSES
+        )) {
+            throw new BusinessException("报名时间冲突");
+        }
+
+        if (existing.isPresent()) {
+            ActivityRegistration registration = existing.get();
+            registration.setStatus(ActivityRegistration.STATUS_PENDING);
+            registration.setNoticeCode(ActivityRegistration.NOTICE_APPLICATION_SUBMITTED);
+            registration.setReviewedAt(null);
+            registration.setReviewedBy(null);
+            registration.setJoinedGroupAt(null);
+            return toRegistrationVO(activityRegistrationRepository.save(registration));
+        }
+
+        ActivityRegistration registration = ActivityRegistration.builder()
+                .userId(userId)
+                .activityId(activity.getId())
+                .status(ActivityRegistration.STATUS_PENDING)
+                .noticeCode(ActivityRegistration.NOTICE_APPLICATION_SUBMITTED)
+                .build();
+
+        return toRegistrationVO(activityRegistrationRepository.save(registration));
+    }
+
+    @Override
+    @Transactional
+    public ActivityRegistrationVO joinGroup(Long id, LoginUser loginUser) {
+        Long userId = requireUserId(loginUser);
+        ActivityRegistration registration = activityRegistrationRepository.findByActivityIdAndUserId(id, userId)
+                .orElseThrow(() -> new BusinessException("Registration not found."));
+
+        if (!ActivityRegistration.STATUS_APPROVED.equals(registration.getStatus())
+                && !ActivityRegistration.STATUS_JOINED_GROUP.equals(registration.getStatus())) {
+            throw new BusinessException("Registration has not been approved.");
+        }
+
+        if (!ActivityRegistration.STATUS_JOINED_GROUP.equals(registration.getStatus())) {
+            registration.setStatus(ActivityRegistration.STATUS_JOINED_GROUP);
+            registration.setNoticeCode(ActivityRegistration.NOTICE_JOINED_GROUP);
+            registration.setJoinedGroupAt(LocalDateTime.now());
+            registration = activityRegistrationRepository.save(registration);
+        }
+
+        return toRegistrationVO(registration);
     }
 
     @Override
@@ -108,22 +326,75 @@ public class ActivityServiceImpl implements ActivityService {
                 .build();
     }
 
+    private ActivityDetailVO toDetailVO(Activity activity, ActivityRegistration registration) {
+        int joinedCount = capacityCount(activity.getId());
+        int totalCount = activity.getRecruitCount() == null ? 0 : activity.getRecruitCount();
+        List<String> images = parseStringList(activity.getImageUrlsJson());
+        if (images.isEmpty() && StringUtils.hasText(activity.getCoverUrl())) {
+            images = List.of(activity.getCoverUrl());
+        }
+
+        return ActivityDetailVO.builder()
+                .id(activity.getId())
+                .title(activity.getTitle())
+                .content(activity.getContent())
+                .authorName(activity.getAuthorName())
+                .coverUrl(activity.getCoverUrl())
+                .imageUrls(images)
+                .startAt(toEpochMillis(activity.getStartAt()))
+                .endAt(toEpochMillis(activity.getEndAt()))
+                .joinedCount(joinedCount)
+                .totalCount(totalCount)
+                .full(totalCount > 0 && joinedCount >= totalCount)
+                .locationText(activity.getLocationText())
+                .mapImageUrl(activity.getMapImageUrl())
+                .inviteQrUrl(activity.getInviteQrUrl())
+                .registrationStatus(registration == null ? null : registration.getStatus())
+                .noticeCode(registration == null ? null : registration.getNoticeCode())
+                .build();
+    }
+
+    private ActivityRegistrationVO toRegistrationVO(ActivityRegistration registration) {
+        return ActivityRegistrationVO.builder()
+                .id(registration.getId())
+                .activityId(registration.getActivityId())
+                .status(registration.getStatus())
+                .noticeCode(registration.getNoticeCode())
+                .build();
+    }
+
+    private boolean isFull(Activity activity) {
+        Integer recruitCount = activity.getRecruitCount();
+        return recruitCount != null && recruitCount > 0 && capacityCount(activity.getId()) >= recruitCount;
+    }
+
+    private int capacityCount(Long activityId) {
+        return (int) activityRegistrationRepository.countByActivityIdAndStatusIn(activityId, CAPACITY_STATUSES);
+    }
+
+    private Long requireUserId(LoginUser loginUser) {
+        if (loginUser == null || loginUser.userId() == null) {
+            throw new BusinessException("Please login first.");
+        }
+        return loginUser.userId();
+    }
+
     private Integer calculateProgressPct(Activity activity) {
         long start = toEpochMillis(activity.getStartAt());
         long end = toEpochMillis(activity.getEndAt());
         long now = System.currentTimeMillis();
 
         if (end <= start) {
-            return 100;
-        }
-        if (now <= start) {
             return 0;
         }
-        if (now >= end) {
+        if (now <= start) {
             return 100;
         }
+        if (now >= end) {
+            return 0;
+        }
 
-        return (int) Math.round((now - start) * 100.0 / (end - start));
+        return (int) Math.round((end - now) * 100.0 / (end - start));
     }
 
     private Long toEpochMillis(LocalDateTime time) {
@@ -131,6 +402,141 @@ public class ActivityServiceImpl implements ActivityService {
             return null;
         }
         return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+    private LocalDateTime toLocalDateTime(Long epochMillis) {
+        if (epochMillis == null) {
+            throw new BusinessException("Activity time is required.");
+        }
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.systemDefault());
+    }
+
+    private List<String> sanitizeList(List<String> values, int maxSize) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            String trimmed = trimToNull(value);
+            if (trimmed == null || result.contains(trimmed)) {
+                continue;
+            }
+            result.add(trimmed);
+            if (result.size() >= maxSize) {
+                break;
+            }
+        }
+        return result;
+    }
+
+    private List<Long> sanitizeTagIds(List<Long> values, int maxSize) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        return values.stream()
+                .filter(value -> value != null && value > 0)
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+                .stream()
+                .limit(maxSize)
+                .toList();
+    }
+
+    private List<Long> resolveRequestTagIds(ActivityCreateRequest request) {
+        if (request.getTagId() != null) {
+            return List.of(request.getTagId());
+        }
+        return request.getTagIds();
+    }
+
+    private List<String> resolveTagNames(List<Long> tagIds) {
+        List<Tag> tags = tagRepository.findByIdInAndEnabledTrue(tagIds);
+        Map<Long, Tag> tagById = tags.stream()
+                .collect(Collectors.toMap(Tag::getId, Function.identity()));
+
+        if (tagById.size() != tagIds.size()) {
+            throw new BusinessException("Activity tag does not exist or is disabled.");
+        }
+
+        return tagIds.stream()
+                .map(id -> tagById.get(id).getName())
+                .toList();
+    }
+
+    private List<Long> resolveSearchTagIds(List<String> tagNames) {
+        List<String> names = sanitizeList(tagNames, 10);
+        if (names.isEmpty()) {
+            return List.of();
+        }
+        return tagRepository.findByNameInAndEnabledTrue(names).stream()
+                .map(Tag::getId)
+                .toList();
+    }
+
+    private List<Long> resolveSearchTagIds(String tagsText) {
+        if (!StringUtils.hasText(tagsText)) {
+            return List.of();
+        }
+        return resolveSearchTagIds(List.of(tagsText.split(",")));
+    }
+
+    private String firstText(List<String> values) {
+        if (values == null) {
+            return null;
+        }
+        return values.stream()
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String resolveAuthorName(User creator) {
+        if (StringUtils.hasText(creator.getNickname())) {
+            return creator.getNickname().trim();
+        }
+        String openid = creator.getOpenid();
+        if (StringUtils.hasText(openid) && openid.length() > 6) {
+            return "User " + openid.substring(openid.length() - 6);
+        }
+        return "MeetFun User";
+    }
+
+    private Integer normalizeRecruitCount(Integer recruitCount) {
+        if (recruitCount == null || recruitCount < 1) {
+            return null;
+        }
+        return Math.min(recruitCount, 9999);
+    }
+
+    private String trimToNull(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        return value.trim();
+    }
+
+    private String toJson(Object value) {
+        try {
+            return objectMapper.writeValueAsString(value == null ? List.of() : value);
+        } catch (JsonProcessingException ex) {
+            throw new BusinessException("Failed to serialize activity data.");
+        }
+    }
+
+    private List<String> parseStringList(String json) {
+        if (!StringUtils.hasText(json)) {
+            return List.of();
+        }
+        try {
+            List<String> values = objectMapper.readValue(
+                    json,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
+            );
+            return values.stream()
+                    .filter(StringUtils::hasText)
+                    .toList();
+        } catch (JsonProcessingException ex) {
+            return List.of();
+        }
     }
 
     private String normalizeRange(String range) {

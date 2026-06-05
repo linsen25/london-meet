@@ -189,12 +189,14 @@
 
     <view class="submit-wrap">
       <mf-button
-        text="创建活动"
+        text="{{submitting ? '创建中...' : '创建活动'}}"
         bg="#16c35b"
         color="#ffffff"
         radius="24rpx"
         height="96rpx"
         fontSize="34rpx"
+        loading="{{submitting}}"
+        disabled="{{submitting}}"
         bind:tap="onSubmit"
       />
     </view>
@@ -251,6 +253,7 @@
     type="range"
     min-date="{{minDate}}"
     max-date="{{maxDate}}"
+    allow-same-day="{{true}}"
     bind:close="onCloseCalendar"
     bind:confirm="onConfirmCalendar"
   />

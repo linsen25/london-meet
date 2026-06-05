@@ -24,6 +24,7 @@
   <view wx:else class="main-screen">
     <view class="tab-panel" wx:if="{{activeTab === 'activity'}}">
       <activity-view
+        id="activityView"
         bindsearch="onActivitySearch"
         bind:openpost="onOpenPost"
       />
@@ -105,13 +106,16 @@
     class="createpost-overlay"
     style="transform: translateX({{createPostTranslateX}}px); transition: {{createPostTransition}};"
   >
-    <createpost-view bind:close="onCreatePostClose" />
+    <createpost-view
+      bind:close="onCreatePostClose"
+      bind:created="onCreatePostCreated"
+    />
   </view>
 
   <view
     wx:if="{{showSearch}}"
     class="search-overlay"
-    style="transform: translateX({{searchTranslateX}}px); transition: {{searchTransition}};"
+    style="{{searchOverlayStyle}}"
   >
     <search
       bind:close="onCloseSearch"

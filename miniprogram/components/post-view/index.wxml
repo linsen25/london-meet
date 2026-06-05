@@ -35,15 +35,23 @@
       <!-- ② 进度条：单独一个 container（单层） -->
       <view class="post-shell post-shell--progress">
         <view class="progress-row-1">
-          <view class="progress-track">
-            <view
-              class="progress-fill"
-              style="width: {{Math.round((joinedCount/totalCount)*100)}}%;"
-            ></view>
-          </view>
-          <text class="progress-percent">
-            {{Math.round((joinedCount/totalCount)*100)}}%
-          </text>
+          <mf-deadline-pill
+            startAt="{{startAt}}"
+            endAt="{{endAt}}"
+            value="{{progressPct}}"
+            showLabel="{{true}}"
+            height="18rpx"
+            trackBg="rgba(255,255,255,0.18)"
+            trackBorder="rgba(255,255,255,0.22)"
+            textColor="rgba(255,255,255,0.82)"
+            greenAtOrAbove="{{75}}"
+            yellowAtOrAbove="{{50}}"
+            orangeAtOrAbove="{{25}}"
+            green="#07C160"
+            yellow="#FFD60A"
+            orange="#FF9500"
+            red="#FF3B30"
+          />
         </view>
 
         <view class="progress-row-2">
@@ -51,6 +59,30 @@
           <text class="progress-meta">{{remainText}}</text>
         </view>
       </view>
+
+      <view class="post-shell post-shell--time">
+  <view class="time-title">
+    活动时间
+  </view>
+  <!-- 开始时间结束时间 -->
+  <view class="time-row">
+    <text class="time-label">开始</text>
+    <view class="time-content">
+      <text class="time-date">{{startDate}}</text>
+      <text class="time-clock">{{startTime}}</text>
+    </view>
+  </view>
+
+  <view class="time-divider"></view>
+
+  <view class="time-row">
+    <text class="time-label">结束</text>
+    <view class="time-content">
+      <text class="time-date">{{endDate}}</text>
+      <text class="time-clock">{{endTime}}</text>
+    </view>
+  </view>
+</view>
 
       <!-- ③ 地址大块：先地图再复制地址 -->
       <view class="post-shell">
@@ -71,12 +103,13 @@
       <!-- ④ ✅ 报名按钮：和进度条同宽同壳，不塌、不被挡、可点击 -->
         <mf-button
           class="apply-btn"
-          text="{{applyTexts[applyStage]}}"
-          bg="{{applyStage === 1 ? '#FF3B30' : '#07C160'}}"
+          text="{{applying ? '提交中...' : applyText}}"
+          bg="{{applyBg}}"
           color="#FFFFFF"
           height="96rpx"
           radius="28rpx"
           fontSize="32rpx"
+          disabled="{{applyDisabled || applying}}"
           bind:tap="onApply"
         />
 

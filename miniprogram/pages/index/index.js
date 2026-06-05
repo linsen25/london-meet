@@ -13,6 +13,7 @@ Page({
     showSearch: false,
     searchTranslateX: 0,
     searchTransition: "none",
+    searchOverlayStyle: "",
     showPost: false,
     postId: "",
     postTranslateX: 0,
@@ -24,6 +25,9 @@ Page({
 
   _windowW: 375,
   _postTouchInSwiper: false,
+  _searchOpenTimer: null,
+  _searchSettleTimer: null,
+  _searchCloseTimer: null,
 
   onLoad() {
     const info = wx.getSystemInfoSync();
@@ -227,48 +231,94 @@ Page({
     }, D);
   },
 
+  onCreatePostCreated() {
+    this.setData({ activeTab: "activity" }, () => {
+      const activityView = this.selectComponent("#activityView");
+      if (activityView && typeof activityView.loadActivityPosts === "function") {
+        activityView.loadActivityPosts({
+          range: activityView.data && activityView.data.navValue,
+          refresh: true,
+          source: "created"
+        });
+      }
+    });
+    this.onCreatePostClose();
+  },
+
   onOpenSearch() {
     const W = this._windowW || 375;
+    this.clearSearchTimers();
 
     this.setData({
       showSearch: true,
       searchTranslateX: W,
-      searchTransition: "none"
+      searchTransition: "none",
+      searchOverlayStyle: `transform: translateX(${W}px); transition: none;`
     });
 
-    setTimeout(() => {
+    this._searchOpenTimer = setTimeout(() => {
       this.setData({
         searchTransition: "transform 260ms ease",
-        searchTranslateX: 0
+        searchTranslateX: 0,
+        searchOverlayStyle: "transform: translateX(0px); transition: transform 260ms ease;"
       });
     }, 16);
+
+    this._searchSettleTimer = setTimeout(() => {
+      if (!this.data.showSearch) return;
+      this.setData({
+        searchOverlayStyle: ""
+      });
+    }, 300);
   },
 
   onCloseSearch() {
     const W = this._windowW || 375;
     const D = 260;
+    this.clearSearchTimers();
 
     this.setData({
-      searchTransition: `transform ${D}ms ease`,
-      searchTranslateX: W
+      searchTransition: "none",
+      searchTranslateX: 0,
+      searchOverlayStyle: "transform: translateX(0px); transition: none;"
     });
 
-    setTimeout(() => {
+    this._searchOpenTimer = setTimeout(() => {
+      this.setData({
+        searchTransition: `transform ${D}ms ease`,
+        searchTranslateX: W,
+        searchOverlayStyle: `transform: translateX(${W}px); transition: transform ${D}ms ease;`
+      });
+    }, 16);
+
+    this._searchCloseTimer = setTimeout(() => {
       this.setData({
         showSearch: false,
         searchTranslateX: 0,
-        searchTransition: "none"
+        searchTransition: "none",
+        searchOverlayStyle: ""
       });
-    }, D);
+    }, D + 16);
   },
 
   closeSearchImmediately() {
     if (!this.data.showSearch) return;
+    this.clearSearchTimers();
     this.setData({
       showSearch: false,
       searchTranslateX: 0,
-      searchTransition: "none"
+      searchTransition: "none",
+      searchOverlayStyle: ""
     });
+  },
+
+  clearSearchTimers() {
+    if (this._searchOpenTimer) clearTimeout(this._searchOpenTimer);
+    if (this._searchSettleTimer) clearTimeout(this._searchSettleTimer);
+    if (this._searchCloseTimer) clearTimeout(this._searchCloseTimer);
+    this._searchOpenTimer = null;
+    this._searchSettleTimer = null;
+    this._searchCloseTimer = null;
   },
   
   onDoSearch(e) {

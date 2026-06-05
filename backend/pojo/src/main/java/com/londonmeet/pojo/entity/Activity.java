@@ -20,6 +20,12 @@ public class Activity {
     @Column(name = "title", nullable = false, length = 120)
     private String title;
 
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "creator_user_id")
+    private Long creatorUserId;
+
     @Column(name = "author_name", nullable = false, length = 80)
     private String authorName;
 
@@ -40,6 +46,30 @@ public class Activity {
 
     @Column(name = "end_at", nullable = false)
     private LocalDateTime endAt;
+
+    @Column(name = "tag_id")
+    private Long tagId;
+
+    @Column(name = "tag_ids_json", columnDefinition = "TEXT")
+    private String tagIdsJson;
+
+    @Column(name = "tags_json", columnDefinition = "TEXT")
+    private String tagsJson;
+
+    @Column(name = "recruit_count")
+    private Integer recruitCount;
+
+    @Column(name = "location_text", length = 500)
+    private String locationText;
+
+    @Column(name = "map_image_url", length = 500)
+    private String mapImageUrl;
+
+    @Column(name = "image_urls_json", columnDefinition = "TEXT")
+    private String imageUrlsJson;
+
+    @Column(name = "invite_qr_url", length = 500)
+    private String inviteQrUrl;
 
     @Column(name = "progress_gif", length = 500)
     private String progressGif;

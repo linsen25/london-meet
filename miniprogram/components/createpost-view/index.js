@@ -1,21 +1,9 @@
-const FIXED_TAGS = [
-  { id: 1, name: "摄影" },
-  { id: 2, name: "运动" },
-  { id: 3, name: "学习" },
-  { id: 4, name: "美食" },
-  { id: 5, name: "旅行" },
-  { id: 6, name: "社交" },
-  { id: 7, name: "音乐" },
-  { id: 8, name: "健身" },
-  { id: 9, name: "露营" },
-  { id: 10, name: "桌游" },
-  { id: 11, name: "电影" },
-  { id: 12, name: "跑步" }
-];
+const { createActivity } = require("../../api/activity");
+const { fetchActivityTags } = require("../../api/tag");
 
-function buildTagList(selectedMap) {
+function buildTagList(tags, selectedMap) {
   const map = selectedMap || {};
-  return FIXED_TAGS.map((tag) => ({
+  return (tags || []).map((tag) => ({
     ...tag,
     selected: !!map[tag.id]
   }));
@@ -26,6 +14,7 @@ Component({
     fileList: [],
     previewImages: [],
     hasImages: false,
+    submitting: false,
     maxCount: 4,
     maxSize: 5 * 1024 * 1024,
 
@@ -43,9 +32,9 @@ Component({
     tagIds: [],
     tagsDisplay: "请选择活动标签",
     showTagPicker: false,
-    tagMax: 10,
-    allTags: FIXED_TAGS,
-    filteredTags: buildTagList({}),
+    tagMax: 1,
+    allTags: [],
+    filteredTags: [],
     selectedTags: [],
     selectedTagMap: {},
 
@@ -110,6 +99,8 @@ Component({
           { values: ["AM", "PM"] }
         ]
       });
+
+      this._loadTags();
     },
 
     detached() {
@@ -120,6 +111,20 @@ Component({
   methods: {
     onBackTap() {
       this.triggerEvent("close");
+    },
+
+    _loadTags() {
+      fetchActivityTags()
+        .then((tags) => {
+          this.setData({
+            allTags: tags,
+            filteredTags: buildTagList(tags, this.data.selectedTagMap)
+          });
+        })
+        .catch((err) => {
+          console.error("[activity tags request failed]", err);
+          this._toast("标签加载失败");
+        });
     },
 
     _syncPreviewImages() {
@@ -304,14 +309,14 @@ Component({
     onOpenTagPicker() {
       this.setData({
         showTagPicker: true,
-        filteredTags: buildTagList(this.data.selectedTagMap)
+        filteredTags: buildTagList(this.data.allTags, this.data.selectedTagMap)
       });
     },
 
     onCloseTagPicker() {
       this.setData({
         showTagPicker: false,
-        filteredTags: buildTagList(this.data.selectedTagMap)
+        filteredTags: buildTagList(this.data.allTags, this.data.selectedTagMap)
       });
     },
 
@@ -326,7 +331,7 @@ Component({
       const map = { ...(this.data.selectedTagMap || {}) };
       const ids = (this.data.tagIds || []).slice();
       const selected = (this.data.selectedTags || []).slice();
-      const max = this.data.tagMax || 10;
+      const max = this.data.tagMax || 1;
 
       if (map[id]) {
         delete map[id];
@@ -335,10 +340,9 @@ Component({
         const tagIndex = selected.findIndex((item) => item.id === id);
         if (tagIndex >= 0) selected.splice(tagIndex, 1);
       } else {
-        if (ids.length >= max) {
-          wx.showToast({ title: `最多选择 ${max} 个标签`, icon: "none" });
-          return;
-        }
+        Object.keys(map).forEach((key) => delete map[key]);
+        ids.splice(0, ids.length);
+        selected.splice(0, selected.length);
         map[id] = true;
         ids.push(id);
         selected.push(tag);
@@ -348,7 +352,7 @@ Component({
         tagIds: ids,
         selectedTags: selected,
         selectedTagMap: map,
-        filteredTags: buildTagList(map)
+        filteredTags: buildTagList(this.data.allTags, map)
       });
     },
 
@@ -357,7 +361,7 @@ Component({
         tagIds: [],
         selectedTags: [],
         selectedTagMap: {},
-        filteredTags: buildTagList({}),
+        filteredTags: buildTagList(this.data.allTags, {}),
         tagsDisplay: "请选择活动标签"
       });
     },
@@ -473,8 +477,156 @@ Component({
       });
     },
 
+    _toast(title) {
+      wx.showToast({ title, icon: "none" });
+    },
+
+    _dateValue(value) {
+      if (!value) return null;
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    },
+
+    _parseTimeText(value) {
+      const text = String(value || "").trim();
+      const matched = text.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+      if (!matched) return null;
+
+      let hour = Number(matched[1]);
+      const minute = Number(matched[2]);
+      const period = matched[3].toUpperCase();
+
+      if (hour < 1 || hour > 12 || minute < 0 || minute > 59) return null;
+      if (period === "AM") {
+        hour = hour === 12 ? 0 : hour;
+      } else {
+        hour = hour === 12 ? 12 : hour + 12;
+      }
+
+      return { hour, minute };
+    },
+
+    _combineDateTime(dateValue, timeText) {
+      const date = this._dateValue(dateValue);
+      const time = this._parseTimeText(timeText);
+      if (!date || !time) return null;
+
+      date.setHours(time.hour, time.minute, 0, 0);
+      return date.getTime();
+    },
+
+    _parseRecruitCount(value) {
+      const text = String(value || "").trim();
+      if (!text || text === "不限") return null;
+      const matched = text.match(/\d+/);
+      return matched ? Number(matched[0]) : null;
+    },
+
+    _buildSubmitPayload() {
+      const title = String(this.data.title || "").trim();
+      const content = String(this.data.content || "").trim();
+      const locationText = this._sanitizeLocationText(this.data.locationText || this.data.locationDisplay);
+      const dateRange = this.data.dateRange || [];
+
+      if (!title) {
+        this._toast("请输入活动标题");
+        return null;
+      }
+      if (!content) {
+        this._toast("请输入正文内容");
+        return null;
+      }
+      if (!this.data.tagIds || !this.data.tagIds.length) {
+        this._toast("\u8bf7\u9009\u62e9\u6d3b\u52a8\u6807\u7b7e");
+        return null;
+      }
+      if (!this._parseRecruitCount(this.data.recruitCount)) {
+        this._toast("\u8bf7\u9009\u62e9\u62db\u52df\u4eba\u6570");
+        return null;
+      }
+      if (!dateRange[0] || !dateRange[1]) {
+        this._toast("请选择持续日期");
+        return null;
+      }
+      if (!this.data.startTime) {
+        this._toast("请选择开始时间");
+        return null;
+      }
+      if (!this.data.endTime) {
+        this._toast("请选择结束时间");
+        return null;
+      }
+      if (!locationText) {
+        this._toast("请填写活动地址");
+        return null;
+      }
+
+      const startAt = this._combineDateTime(dateRange[0], this.data.startTime);
+      const endAt = this._combineDateTime(dateRange[1], this.data.endTime);
+      if (!startAt || !endAt) {
+        this._toast("活动时间格式不正确");
+        return null;
+      }
+      if (endAt <= startAt) {
+        this._toast("结束时间必须晚于开始时间");
+        return null;
+      }
+
+      const imageUrls = (this.data.fileList || [])
+        .map((item) => item && item.url)
+        .filter(Boolean);
+      const inviteQrUrl = this.data.inviteFileList && this.data.inviteFileList[0]
+        ? this.data.inviteFileList[0].url
+        : "";
+      const recruitCount = this._parseRecruitCount(this.data.recruitCount);
+
+      if (!imageUrls.length) {
+        this._toast("\u8bf7\u81f3\u5c11\u4e0a\u4f20\u4e00\u5f20\u6d3b\u52a8\u56fe\u7247");
+        return null;
+      }
+      if (!inviteQrUrl) {
+        this._toast("\u8bf7\u4e0a\u4f20\u7fa4\u4e8c\u7ef4\u7801");
+        return null;
+      }
+
+      return {
+        title,
+        content,
+        tagId: (this.data.tagIds || [])[0],
+        tagIds: (this.data.tagIds || []).slice(0, 1),
+        startAt,
+        endAt,
+        recruitCount,
+        locationText,
+        mapImageUrl: this.data.mapImageUrl || "",
+        imageUrls,
+        inviteQrUrl
+      };
+    },
+
     onSubmit() {
-      wx.showToast({ title: "创建活动（示例）", icon: "none" });
+      if (this.data.submitting) return;
+
+      const payload = this._buildSubmitPayload();
+      if (!payload) return;
+
+      this.setData({ submitting: true });
+      wx.showLoading({ title: "创建中...", mask: true });
+
+      createActivity(payload)
+        .then((activity) => {
+          wx.hideLoading();
+          wx.showToast({ title: "创建成功", icon: "success" });
+          this.setData({ submitting: false });
+          this.triggerEvent("created", { activity });
+        })
+        .catch((err) => {
+          wx.hideLoading();
+          console.error("[create activity failed]", err);
+          this.setData({ submitting: false });
+          this._toast((err && err.message) || "创建失败");
+        });
     }
   }
 });

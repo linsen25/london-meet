@@ -1,0 +1,2447 @@
+文件夹 PATH 列表
+卷序列号为 000000F8 1892:9256
+D:.
+|   .gitignore
+|   activity_diagram.drawio
+|   docker-compose.yml
+|   package.json
+|   project.config.json
+|   project.private.config.json
+|   README.md
+|   structure.txt
+|   tsconfig.json
+|   userFLow.drawio
+|   
++---.idea
+|   |   .gitignore
+|   |   compiler.xml
+|   |   dataSources.local.xml
+|   |   dataSources.xml
+|   |   encodings.xml
+|   |   jarRepositories.xml
+|   |   london-meet.iml
+|   |   misc.xml
+|   |   modules.xml
+|   |   sqldialects.xml
+|   |   vcs.xml
+|   |   workspace.xml
+|   |   
+|   \---dataSources
+|       |   615973d9-d916-49a8-8f15-c39bbf55872c.xml
+|       |   
+|       \---615973d9-d916-49a8-8f15-c39bbf55872c
+|           \---storage_v2
+|               \---_src_
+|                   \---schema
+|                           information_schema.FNRwLQ.meta
+|                           mysql.osA4Bg.meta
+|                           performance_schema.kIw0nw.meta
+|                           sys.zb4BAA.meta
+|                           
++---backend
+|   |   mvnw
+|   |   mvnw.cmd
+|   |   pom.xml
+|   |   
+|   +---.mvn
+|   |   \---wrapper
+|   |           maven-wrapper.properties
+|   |           
+|   +---common
+|   |   |   pom.xml
+|   |   |   
+|   |   +---src
+|   |   |   \---main
+|   |   |       \---java
+|   |   |           \---com
+|   |   |               \---londonmeet
+|   |   |                   \---common
+|   |   |                       |   Main.java
+|   |   |                       |   
+|   |   |                       +---constant
+|   |   |                       |       JwtClaimsConstant.java
+|   |   |                       |       MessageConstant.java
+|   |   |                       |       
+|   |   |                       +---context
+|   |   |                       +---enums
+|   |   |                       +---exception
+|   |   |                       |       BaseException.java
+|   |   |                       |       BusinessException.java
+|   |   |                       |       
+|   |   |                       +---properties
+|   |   |                       |       JwtProperties.java
+|   |   |                       |       
+|   |   |                       +---response
+|   |   |                       |       ApiResponse.java
+|   |   |                       |       PageResponse.java
+|   |   |                       |       
+|   |   |                       \---utils
+|   |   |                               JwtUtil.java
+|   |   |                               
+|   |   \---target
+|   |       |   common-0.0.1-SNAPSHOT.jar
+|   |       |   
+|   |       +---classes
+|   |       |   \---com
+|   |       |       \---londonmeet
+|   |       |           \---common
+|   |       |               |   Main.class
+|   |       |               |   
+|   |       |               +---constant
+|   |       |               |       JwtClaimsConstant.class
+|   |       |               |       MessageConstant.class
+|   |       |               |       
+|   |       |               +---context
+|   |       |               +---enums
+|   |       |               +---exception
+|   |       |               |       BaseException.class
+|   |       |               |       BusinessException.class
+|   |       |               |       
+|   |       |               +---properties
+|   |       |               |       JwtProperties.class
+|   |       |               |       
+|   |       |               +---response
+|   |       |               |       ApiResponse.class
+|   |       |               |       PageResponse.class
+|   |       |               |       
+|   |       |               \---utils
+|   |       |                       JwtUtil.class
+|   |       |                       
+|   |       +---generated-sources
+|   |       |   \---annotations
+|   |       +---generated-test-sources
+|   |       |   \---test-annotations
+|   |       +---maven-archiver
+|   |       |       pom.properties
+|   |       |       
+|   |       +---maven-status
+|   |       |   \---maven-compiler-plugin
+|   |       |       \---compile
+|   |       |           \---default-compile
+|   |       |                   createdFiles.lst
+|   |       |                   inputFiles.lst
+|   |       |                   
+|   |       \---test-classes
+|   +---pojo
+|   |   |   pom.xml
+|   |   |   
+|   |   +---src
+|   |   |   \---main
+|   |   |       \---java
+|   |   |           \---com
+|   |   |               \---londonmeet
+|   |   |                   \---pojo
+|   |   |                       |   Main.java
+|   |   |                       |   
+|   |   |                       +---dto
+|   |   |                       |   \---request
+|   |   |                       |           ActivityCreateRequest.java
+|   |   |                       |           ActivityLikeRequest.java
+|   |   |                       |           ActivityQueryRequest.java
+|   |   |                       |           WechatLoginRequest.java
+|   |   |                       |           
+|   |   |                       +---entity
+|   |   |                       |       Activity.java
+|   |   |                       |       Tag.java
+|   |   |                       |       User.java
+|   |   |                       |       
+|   |   |                       \---vo
+|   |   |                               ActivityLikeVO.java
+|   |   |                               ActivityPageVO.java
+|   |   |                               ActivityPostVO.java
+|   |   |                               LoginUserVO.java
+|   |   |                               TagVO.java
+|   |   |                               
+|   |   \---target
+|   |       |   pojo-0.0.1-SNAPSHOT.jar
+|   |       |   
+|   |       +---classes
+|   |       |   \---com
+|   |       |       \---londonmeet
+|   |       |           \---pojo
+|   |       |               |   Main.class
+|   |       |               |   
+|   |       |               +---dto
+|   |       |               |   \---request
+|   |       |               |           ActivityCreateRequest.class
+|   |       |               |           ActivityLikeRequest.class
+|   |       |               |           ActivityQueryRequest.class
+|   |       |               |           WechatLoginRequest.class
+|   |       |               |           
+|   |       |               +---entity
+|   |       |               |       Activity$ActivityBuilder.class
+|   |       |               |       Activity.class
+|   |       |               |       Tag$TagBuilder.class
+|   |       |               |       Tag.class
+|   |       |               |       User$UserBuilder.class
+|   |       |               |       User.class
+|   |       |               |       
+|   |       |               \---vo
+|   |       |                       ActivityLikeVO$ActivityLikeVOBuilder.class
+|   |       |                       ActivityLikeVO.class
+|   |       |                       ActivityPageVO$ActivityPageVOBuilder.class
+|   |       |                       ActivityPageVO.class
+|   |       |                       ActivityPostVO$ActivityPostVOBuilder.class
+|   |       |                       ActivityPostVO.class
+|   |       |                       LoginUserVO$LoginUserVOBuilder.class
+|   |       |                       LoginUserVO.class
+|   |       |                       TagVO$TagVOBuilder.class
+|   |       |                       TagVO.class
+|   |       |                       
+|   |       +---generated-sources
+|   |       |   \---annotations
+|   |       +---generated-test-sources
+|   |       |   \---test-annotations
+|   |       +---maven-archiver
+|   |       |       pom.properties
+|   |       |       
+|   |       +---maven-status
+|   |       |   \---maven-compiler-plugin
+|   |       |       \---compile
+|   |       |           \---default-compile
+|   |       |                   createdFiles.lst
+|   |       |                   inputFiles.lst
+|   |       |                   
+|   |       \---test-classes
+|   \---server
+|       |   pom.xml
+|       |   
+|       +---src
+|       |   +---main
+|       |   |   +---java
+|       |   |   |   \---com
+|       |   |   |       \---londonmeet
+|       |   |   |           \---server
+|       |   |   |               |   ServerApplication.java
+|       |   |   |               |   
+|       |   |   |               +---annotation
+|       |   |   |               +---aspect
+|       |   |   |               +---config
+|       |   |   |               |       SecurityConfig.java
+|       |   |   |               |       WechatProperties.java
+|       |   |   |               |       
+|       |   |   |               +---controller
+|       |   |   |               |   +---activity
+|       |   |   |               |   |       ActivityController.java
+|       |   |   |               |   |       TagController.java
+|       |   |   |               |   |       
+|       |   |   |               |   +---admin
+|       |   |   |               |   \---user
+|       |   |   |               |           AuthController.java
+|       |   |   |               |           HealthController.java
+|       |   |   |               |           
+|       |   |   |               +---handler
+|       |   |   |               |       GlobalExceptionHandler.java
+|       |   |   |               |       
+|       |   |   |               +---mq
+|       |   |   |               |   +---config
+|       |   |   |               |   +---consumer
+|       |   |   |               |   \---producer
+|       |   |   |               +---redis
+|       |   |   |               +---repository
+|       |   |   |               |       ActivityRepository.java
+|       |   |   |               |       TagRepository.java
+|       |   |   |               |       UserRepository.java
+|       |   |   |               |       
+|       |   |   |               +---security
+|       |   |   |               |       JwtAuthenticationFilter.java
+|       |   |   |               |       JwtRequestAttributes.java
+|       |   |   |               |       LoginUser.java
+|       |   |   |               |       
+|       |   |   |               +---service
+|       |   |   |               |   |   ActivityService.java
+|       |   |   |               |   |   AuthService.java
+|       |   |   |               |   |   TagService.java
+|       |   |   |               |   |   WechatCode2SessionClient.java
+|       |   |   |               |   |   
+|       |   |   |               |   \---impl
+|       |   |   |               |           ActivityServiceImpl.java
+|       |   |   |               |           AuthServiceImpl.java
+|       |   |   |               |           TagServiceImpl.java
+|       |   |   |               |           
+|       |   |   |               +---task
+|       |   |   |               \---websocket
+|       |   |   \---resources
+|       |   |       |   application.yml
+|       |   |       |   
+|       |   |       \---db
+|       |   |           \---migration
+|       |   |                   V10__create_tags_table.sql
+|       |   |                   V11__refresh_today_progress_demo_activity_posts.sql
+|       |   |                   V1__create_users_table.sql
+|       |   |                   V2__create_activities_table.sql
+|       |   |                   V4__extend_activities_for_create_post.sql
+|       |   |                   V5__remove_seed_activity_posts.sql
+|       |   |                   V6__remove_replaced_seed_activity_posts.sql
+|       |   |                   V7__seed_complete_activity_posts.sql
+|       |   |                   V8__seed_progress_demo_activity_posts.sql
+|       |   |                   V9__fix_month_red_progress_seed.sql
+|       |   |                   
+|       |   \---test
+|       |       \---java
+|       |           \---com
+|       |               \---londonmeet
+|       |                   \---server
+|       |                           ServerApplicationTests.java
+|       |                           
+|       \---target
+|           |   classpath.txt
+|           |   server-0.0.1-SNAPSHOT.jar
+|           |   server-0.0.1-SNAPSHOT.jar.original
+|           |   server-run.err.log
+|           |   server-run.log
+|           |   spring-boot-run.err.log
+|           |   spring-boot-run.log
+|           |   
+|           +---classes
+|           |   |   application.yml
+|           |   |   
+|           |   +---com
+|           |   |   \---londonmeet
+|           |   |       \---server
+|           |   |           |   ServerApplication.class
+|           |   |           |   
+|           |   |           +---annotation
+|           |   |           +---aspect
+|           |   |           +---config
+|           |   |           |       SecurityConfig.class
+|           |   |           |       WechatProperties.class
+|           |   |           |       
+|           |   |           +---controller
+|           |   |           |   +---activity
+|           |   |           |   |       ActivityController.class
+|           |   |           |   |       TagController.class
+|           |   |           |   |       
+|           |   |           |   +---admin
+|           |   |           |   \---user
+|           |   |           |           AuthController.class
+|           |   |           |           HealthController.class
+|           |   |           |           
+|           |   |           +---handler
+|           |   |           |       GlobalExceptionHandler.class
+|           |   |           |       
+|           |   |           +---mq
+|           |   |           |   +---config
+|           |   |           |   +---consumer
+|           |   |           |   \---producer
+|           |   |           +---redis
+|           |   |           +---repository
+|           |   |           |       ActivityRepository.class
+|           |   |           |       TagRepository.class
+|           |   |           |       UserRepository.class
+|           |   |           |       
+|           |   |           +---security
+|           |   |           |       JwtAuthenticationFilter.class
+|           |   |           |       JwtRequestAttributes.class
+|           |   |           |       LoginUser.class
+|           |   |           |       
+|           |   |           +---service
+|           |   |           |   |   ActivityService.class
+|           |   |           |   |   AuthService.class
+|           |   |           |   |   TagService.class
+|           |   |           |   |   WechatCode2SessionClient$WechatSession.class
+|           |   |           |   |   WechatCode2SessionClient.class
+|           |   |           |   |   
+|           |   |           |   \---impl
+|           |   |           |           ActivityServiceImpl.class
+|           |   |           |           AuthServiceImpl.class
+|           |   |           |           TagServiceImpl.class
+|           |   |           |           
+|           |   |           +---task
+|           |   |           \---websocket
+|           |   \---db
+|           |       \---migration
+|           |               V10__create_tags_table.sql
+|           |               V11__refresh_today_progress_demo_activity_posts.sql
+|           |               V1__create_users_table.sql
+|           |               V2__create_activities_table.sql
+|           |               V4__extend_activities_for_create_post.sql
+|           |               V5__remove_seed_activity_posts.sql
+|           |               V6__remove_replaced_seed_activity_posts.sql
+|           |               V7__seed_complete_activity_posts.sql
+|           |               V8__seed_progress_demo_activity_posts.sql
+|           |               V9__fix_month_red_progress_seed.sql
+|           |               
+|           +---generated-sources
+|           |   \---annotations
+|           +---generated-test-sources
+|           |   \---test-annotations
+|           +---maven-archiver
+|           |       pom.properties
+|           |       
+|           +---maven-status
+|           |   \---maven-compiler-plugin
+|           |       +---compile
+|           |       |   \---default-compile
+|           |       |           createdFiles.lst
+|           |       |           inputFiles.lst
+|           |       |           
+|           |       \---testCompile
+|           |           \---default-testCompile
+|           |                   createdFiles.lst
+|           |                   inputFiles.lst
+|           |                   
+|           +---surefire-reports
+|           |       2026-06-04T13-08-19_276.dumpstream
+|           |       2026-06-04T13-11-23_400.dumpstream
+|           |       2026-06-05T12-08-00_974.dumpstream
+|           |       2026-06-05T12-18-45_508.dumpstream
+|           |       2026-06-05T12-19-40_171.dumpstream
+|           |       2026-06-05T12-46-59_653.dumpstream
+|           |       2026-06-05T13-10-44_480.dumpstream
+|           |       2026-06-05T13-12-11_376.dumpstream
+|           |       2026-06-05T13-35-09_857.dumpstream
+|           |       2026-06-05T13-59-01_087.dumpstream
+|           |       2026-06-05T14-12-26_188.dumpstream
+|           |       2026-06-05T14-13-18_046.dumpstream
+|           |       2026-06-05T14-47-11_985.dumpstream
+|           |       2026-06-05T14-49-40_675.dumpstream
+|           |       2026-06-05T14-51-35_662.dumpstream
+|           |       2026-06-05T14-52-48_627.dumpstream
+|           |       com.londonmeet.server.ServerApplicationTests.txt
+|           |       TEST-com.londonmeet.server.ServerApplicationTests.xml
+|           |       
+|           \---test-classes
+|               \---com
+|                   \---londonmeet
+|                       \---server
+|                               ServerApplicationTests.class
+|                               
++---docs
+|       00-roadmap.md
+|       01-requirements.md
+|       
++---frontend
++---miniprogram
+|   |   app.json
+|   |   app.scss
+|   |   app.ts
+|   |   app.wxss
+|   |   package-lock.json
+|   |   package.json
+|   |   project.config.json
+|   |   project.private.config.json
+|   |   sitemap.json
+|   |   
+|   +---api
+|   |       activity.js
+|   |       auth.js
+|   |       search.js
+|   |       tag.js
+|   |       
+|   +---assets
+|   |   +---activity
+|   |   |   +---animatoins
+|   |   |   \---images
+|   |   +---home
+|   |   |   +---animatoins
+|   |   |   \---images
+|   |   +---login
+|   |   |   +---animatoins
+|   |   |   \---images
+|   |   \---main
+|   |       +---animatoins
+|   |       \---images
+|   +---components
+|   |   +---activity
+|   |   |       activity.js
+|   |   |       activity.json
+|   |   |       activity.scss
+|   |   |       activity.wxml
+|   |   |       
+|   |   +---card
+|   |   |       card.js
+|   |   |       card.json
+|   |   |       card.scss
+|   |   |       card.wxml
+|   |   |       
+|   |   +---createpost-view
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---ec-canvas
+|   |   |       ec-canvas.js
+|   |   |       ec-canvas.json
+|   |   |       ec-canvas.wxml
+|   |   |       ec-canvas.wxss
+|   |   |       echarts.js
+|   |   |       wx-canvas.js
+|   |   |       
+|   |   +---home
+|   |   |       home.js
+|   |   |       home.json
+|   |   |       home.scss
+|   |   |       home.wxml
+|   |   |       
+|   |   +---mf-button
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---mf-deadline-pill
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---mf-segment-tabs
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---mf-shell
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---mf-template
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---pending-review
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---post-view
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   +---review-rate
+|   |   |       rate.js
+|   |   |       rate.json
+|   |   |       rate.scss
+|   |   |       rate.wxml
+|   |   |       
+|   |   \---search
+|   |           search.js
+|   |           search.json
+|   |           search.scss
+|   |           search.wxml
+|   |           
+|   +---constants
+|   |   +---activity
+|   |   +---common
+|   |   +---home
+|   |   +---login
+|   |   \---main
+|   +---data
+|   +---miniprogram_npm
+|   |   \---@vant
+|   |       \---weapp
+|   |           +---action-sheet
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---area
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---button
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---calendar
+|   |           |   |   calendar.wxml
+|   |           |   |   index.d.ts
+|   |           |   |   index.js
+|   |           |   |   index.json
+|   |           |   |   index.wxml
+|   |           |   |   index.wxs
+|   |           |   |   index.wxss
+|   |           |   |   utils.d.ts
+|   |           |   |   utils.js
+|   |           |   |   utils.wxs
+|   |           |   |   
+|   |           |   \---components
+|   |           |       +---header
+|   |           |       |       index.d.ts
+|   |           |       |       index.js
+|   |           |       |       index.json
+|   |           |       |       index.wxml
+|   |           |       |       index.wxss
+|   |           |       |       
+|   |           |       \---month
+|   |           |               index.d.ts
+|   |           |               index.js
+|   |           |               index.json
+|   |           |               index.wxml
+|   |           |               index.wxs
+|   |           |               index.wxss
+|   |           |               
+|   |           +---card
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---cascader
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---cell
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---cell-group
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---checkbox
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---checkbox-group
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---circle
+|   |           |       canvas.d.ts
+|   |           |       canvas.js
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---col
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---collapse
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---collapse-item
+|   |           |       animate.d.ts
+|   |           |       animate.js
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---common
+|   |           |   |   color.d.ts
+|   |           |   |   color.js
+|   |           |   |   component.d.ts
+|   |           |   |   component.js
+|   |           |   |   index.wxss
+|   |           |   |   relation.d.ts
+|   |           |   |   relation.js
+|   |           |   |   utils.d.ts
+|   |           |   |   utils.js
+|   |           |   |   validator.d.ts
+|   |           |   |   validator.js
+|   |           |   |   version.d.ts
+|   |           |   |   version.js
+|   |           |   |   
+|   |           |   \---style
+|   |           |       |   clearfix.wxss
+|   |           |       |   ellipsis.wxss
+|   |           |       |   hairline.wxss
+|   |           |       |   var.wxss
+|   |           |       |   
+|   |           |       \---mixins
+|   |           |               clearfix.wxss
+|   |           |               ellipsis.wxss
+|   |           |               hairline.wxss
+|   |           |               
+|   |           +---config-provider
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       
+|   |           +---count-down
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       utils.d.ts
+|   |           |       utils.js
+|   |           |       
+|   |           +---datetime-picker
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---definitions
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       
+|   |           +---dialog
+|   |           |       dialog.d.ts
+|   |           |       dialog.js
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---divider
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---dropdown-item
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       shared.d.ts
+|   |           |       shared.js
+|   |           |       
+|   |           +---dropdown-menu
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---empty
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---field
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       input.wxml
+|   |           |       props.d.ts
+|   |           |       props.js
+|   |           |       textarea.wxml
+|   |           |       types.d.ts
+|   |           |       types.js
+|   |           |       
+|   |           +---goods-action
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---goods-action-button
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---goods-action-icon
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---grid
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---grid-item
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---icon
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---image
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---index-anchor
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---index-bar
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---info
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---loading
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---mixins
+|   |           |       basic.d.ts
+|   |           |       basic.js
+|   |           |       button.d.ts
+|   |           |       button.js
+|   |           |       link.d.ts
+|   |           |       link.js
+|   |           |       page-scroll.d.ts
+|   |           |       page-scroll.js
+|   |           |       touch.d.ts
+|   |           |       touch.js
+|   |           |       transition.d.ts
+|   |           |       transition.js
+|   |           |       
+|   |           +---nav-bar
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---notice-bar
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---notify
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       notify.d.ts
+|   |           |       notify.js
+|   |           |       
+|   |           +---overlay
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       overlay.wxml
+|   |           |       
+|   |           +---panel
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---picker
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       shared.d.ts
+|   |           |       shared.js
+|   |           |       toolbar.wxml
+|   |           |       
+|   |           +---picker-column
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---popup
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       popup.wxml
+|   |           |       
+|   |           +---progress
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---radio
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---radio-group
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---rate
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---row
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---search
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---share-sheet
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       options.d.ts
+|   |           |       options.js
+|   |           |       options.json
+|   |           |       options.wxml
+|   |           |       options.wxs
+|   |           |       options.wxss
+|   |           |       
+|   |           +---sidebar
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---sidebar-item
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---skeleton
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---slider
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---stepper
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---steps
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---sticky
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---submit-bar
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---swipe-cell
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---switch
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---tab
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---tabbar
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---tabbar-item
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       
+|   |           +---tabs
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---tag
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---toast
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxss
+|   |           |       toast.d.ts
+|   |           |       toast.js
+|   |           |       
+|   |           +---transition
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---tree-select
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       
+|   |           +---uploader
+|   |           |       index.d.ts
+|   |           |       index.js
+|   |           |       index.json
+|   |           |       index.wxml
+|   |           |       index.wxs
+|   |           |       index.wxss
+|   |           |       shared.d.ts
+|   |           |       shared.js
+|   |           |       utils.d.ts
+|   |           |       utils.js
+|   |           |       
+|   |           \---wxs
+|   |                   add-unit.wxs
+|   |                   array.wxs
+|   |                   bem.wxs
+|   |                   memoize.wxs
+|   |                   object.wxs
+|   |                   style.wxs
+|   |                   utils.wxs
+|   |                   
+|   +---node_modules
+|   |   |   .package-lock.json
+|   |   |   
+|   |   \---@vant
+|   |       \---weapp
+|   |           |   LICENSE
+|   |           |   package.json
+|   |           |   README.md
+|   |           |   
+|   |           +---dist
+|   |           |   +---action-sheet
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---area
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---button
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---calendar
+|   |           |   |   |   calendar.wxml
+|   |           |   |   |   index.d.ts
+|   |           |   |   |   index.js
+|   |           |   |   |   index.json
+|   |           |   |   |   index.wxml
+|   |           |   |   |   index.wxs
+|   |           |   |   |   index.wxss
+|   |           |   |   |   utils.d.ts
+|   |           |   |   |   utils.js
+|   |           |   |   |   utils.wxs
+|   |           |   |   |   
+|   |           |   |   \---components
+|   |           |   |       +---header
+|   |           |   |       |       index.d.ts
+|   |           |   |       |       index.js
+|   |           |   |       |       index.json
+|   |           |   |       |       index.wxml
+|   |           |   |       |       index.wxss
+|   |           |   |       |       
+|   |           |   |       \---month
+|   |           |   |               index.d.ts
+|   |           |   |               index.js
+|   |           |   |               index.json
+|   |           |   |               index.wxml
+|   |           |   |               index.wxs
+|   |           |   |               index.wxss
+|   |           |   |               
+|   |           |   +---card
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---cascader
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---cell
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---cell-group
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---checkbox
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---checkbox-group
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---circle
+|   |           |   |       canvas.d.ts
+|   |           |   |       canvas.js
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---col
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---collapse
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---collapse-item
+|   |           |   |       animate.d.ts
+|   |           |   |       animate.js
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---common
+|   |           |   |   |   color.d.ts
+|   |           |   |   |   color.js
+|   |           |   |   |   component.d.ts
+|   |           |   |   |   component.js
+|   |           |   |   |   index.wxss
+|   |           |   |   |   relation.d.ts
+|   |           |   |   |   relation.js
+|   |           |   |   |   utils.d.ts
+|   |           |   |   |   utils.js
+|   |           |   |   |   validator.d.ts
+|   |           |   |   |   validator.js
+|   |           |   |   |   version.d.ts
+|   |           |   |   |   version.js
+|   |           |   |   |   
+|   |           |   |   \---style
+|   |           |   |       |   clearfix.wxss
+|   |           |   |       |   ellipsis.wxss
+|   |           |   |       |   hairline.wxss
+|   |           |   |       |   var.wxss
+|   |           |   |       |   
+|   |           |   |       \---mixins
+|   |           |   |               clearfix.wxss
+|   |           |   |               ellipsis.wxss
+|   |           |   |               hairline.wxss
+|   |           |   |               
+|   |           |   +---config-provider
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       
+|   |           |   +---count-down
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       utils.d.ts
+|   |           |   |       utils.js
+|   |           |   |       
+|   |           |   +---datetime-picker
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---definitions
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       
+|   |           |   +---dialog
+|   |           |   |       dialog.d.ts
+|   |           |   |       dialog.js
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---divider
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---dropdown-item
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       shared.d.ts
+|   |           |   |       shared.js
+|   |           |   |       
+|   |           |   +---dropdown-menu
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---empty
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---field
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       input.wxml
+|   |           |   |       props.d.ts
+|   |           |   |       props.js
+|   |           |   |       textarea.wxml
+|   |           |   |       types.d.ts
+|   |           |   |       types.js
+|   |           |   |       
+|   |           |   +---goods-action
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---goods-action-button
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---goods-action-icon
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---grid
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---grid-item
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---icon
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---image
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---index-anchor
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---index-bar
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---info
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---loading
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---mixins
+|   |           |   |       basic.d.ts
+|   |           |   |       basic.js
+|   |           |   |       button.d.ts
+|   |           |   |       button.js
+|   |           |   |       link.d.ts
+|   |           |   |       link.js
+|   |           |   |       page-scroll.d.ts
+|   |           |   |       page-scroll.js
+|   |           |   |       touch.d.ts
+|   |           |   |       touch.js
+|   |           |   |       transition.d.ts
+|   |           |   |       transition.js
+|   |           |   |       
+|   |           |   +---nav-bar
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---notice-bar
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---notify
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       notify.d.ts
+|   |           |   |       notify.js
+|   |           |   |       
+|   |           |   +---overlay
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       overlay.wxml
+|   |           |   |       
+|   |           |   +---panel
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---picker
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       shared.d.ts
+|   |           |   |       shared.js
+|   |           |   |       toolbar.wxml
+|   |           |   |       
+|   |           |   +---picker-column
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---popup
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       popup.wxml
+|   |           |   |       
+|   |           |   +---progress
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---radio
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---radio-group
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---rate
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---row
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---search
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---share-sheet
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       options.d.ts
+|   |           |   |       options.js
+|   |           |   |       options.json
+|   |           |   |       options.wxml
+|   |           |   |       options.wxs
+|   |           |   |       options.wxss
+|   |           |   |       
+|   |           |   +---sidebar
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---sidebar-item
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---skeleton
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---slider
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---stepper
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---steps
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---sticky
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---submit-bar
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---swipe-cell
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---switch
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---tab
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---tabbar
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---tabbar-item
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---tabs
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---tag
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---toast
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxss
+|   |           |   |       toast.d.ts
+|   |           |   |       toast.js
+|   |           |   |       
+|   |           |   +---transition
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---tree-select
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       
+|   |           |   +---uploader
+|   |           |   |       index.d.ts
+|   |           |   |       index.js
+|   |           |   |       index.json
+|   |           |   |       index.wxml
+|   |           |   |       index.wxs
+|   |           |   |       index.wxss
+|   |           |   |       shared.d.ts
+|   |           |   |       shared.js
+|   |           |   |       utils.d.ts
+|   |           |   |       utils.js
+|   |           |   |       
+|   |           |   \---wxs
+|   |           |           add-unit.wxs
+|   |           |           array.wxs
+|   |           |           bem.wxs
+|   |           |           memoize.wxs
+|   |           |           object.wxs
+|   |           |           style.wxs
+|   |           |           utils.wxs
+|   |           |           
+|   |           \---lib
+|   |               +---action-sheet
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---area
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---button
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---calendar
+|   |               |   |   calendar.wxml
+|   |               |   |   index.d.ts
+|   |               |   |   index.js
+|   |               |   |   index.json
+|   |               |   |   index.wxml
+|   |               |   |   index.wxs
+|   |               |   |   index.wxss
+|   |               |   |   utils.d.ts
+|   |               |   |   utils.js
+|   |               |   |   utils.wxs
+|   |               |   |   
+|   |               |   \---components
+|   |               |       +---header
+|   |               |       |       index.d.ts
+|   |               |       |       index.js
+|   |               |       |       index.json
+|   |               |       |       index.wxml
+|   |               |       |       index.wxss
+|   |               |       |       
+|   |               |       \---month
+|   |               |               index.d.ts
+|   |               |               index.js
+|   |               |               index.json
+|   |               |               index.wxml
+|   |               |               index.wxs
+|   |               |               index.wxss
+|   |               |               
+|   |               +---card
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---cascader
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---cell
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---cell-group
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---checkbox
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---checkbox-group
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---circle
+|   |               |       canvas.d.ts
+|   |               |       canvas.js
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---col
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---collapse
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---collapse-item
+|   |               |       animate.d.ts
+|   |               |       animate.js
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---common
+|   |               |   |   color.d.ts
+|   |               |   |   color.js
+|   |               |   |   component.d.ts
+|   |               |   |   component.js
+|   |               |   |   index.wxss
+|   |               |   |   relation.d.ts
+|   |               |   |   relation.js
+|   |               |   |   utils.d.ts
+|   |               |   |   utils.js
+|   |               |   |   validator.d.ts
+|   |               |   |   validator.js
+|   |               |   |   version.d.ts
+|   |               |   |   version.js
+|   |               |   |   
+|   |               |   \---style
+|   |               |       |   clearfix.wxss
+|   |               |       |   ellipsis.wxss
+|   |               |       |   hairline.wxss
+|   |               |       |   var.wxss
+|   |               |       |   
+|   |               |       \---mixins
+|   |               |               clearfix.wxss
+|   |               |               ellipsis.wxss
+|   |               |               hairline.wxss
+|   |               |               
+|   |               +---config-provider
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       
+|   |               +---count-down
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       utils.d.ts
+|   |               |       utils.js
+|   |               |       
+|   |               +---datetime-picker
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---definitions
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       
+|   |               +---dialog
+|   |               |       dialog.d.ts
+|   |               |       dialog.js
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---divider
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---dropdown-item
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       shared.d.ts
+|   |               |       shared.js
+|   |               |       
+|   |               +---dropdown-menu
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---empty
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---field
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       input.wxml
+|   |               |       props.d.ts
+|   |               |       props.js
+|   |               |       textarea.wxml
+|   |               |       types.d.ts
+|   |               |       types.js
+|   |               |       
+|   |               +---goods-action
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---goods-action-button
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---goods-action-icon
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---grid
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---grid-item
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---icon
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---image
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---index-anchor
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---index-bar
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---info
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---loading
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---mixins
+|   |               |       basic.d.ts
+|   |               |       basic.js
+|   |               |       button.d.ts
+|   |               |       button.js
+|   |               |       link.d.ts
+|   |               |       link.js
+|   |               |       page-scroll.d.ts
+|   |               |       page-scroll.js
+|   |               |       touch.d.ts
+|   |               |       touch.js
+|   |               |       transition.d.ts
+|   |               |       transition.js
+|   |               |       
+|   |               +---nav-bar
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---notice-bar
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---notify
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       notify.d.ts
+|   |               |       notify.js
+|   |               |       
+|   |               +---overlay
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       overlay.wxml
+|   |               |       
+|   |               +---panel
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---picker
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       shared.d.ts
+|   |               |       shared.js
+|   |               |       toolbar.wxml
+|   |               |       
+|   |               +---picker-column
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---popup
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       popup.wxml
+|   |               |       
+|   |               +---progress
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---radio
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---radio-group
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---rate
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---row
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---search
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---share-sheet
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       options.d.ts
+|   |               |       options.js
+|   |               |       options.json
+|   |               |       options.wxml
+|   |               |       options.wxs
+|   |               |       options.wxss
+|   |               |       
+|   |               +---sidebar
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---sidebar-item
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---skeleton
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---slider
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---stepper
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---steps
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---sticky
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---submit-bar
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---swipe-cell
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---switch
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---tab
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---tabbar
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---tabbar-item
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       
+|   |               +---tabs
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---tag
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---toast
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxss
+|   |               |       toast.d.ts
+|   |               |       toast.js
+|   |               |       
+|   |               +---transition
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---tree-select
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       
+|   |               +---uploader
+|   |               |       index.d.ts
+|   |               |       index.js
+|   |               |       index.json
+|   |               |       index.wxml
+|   |               |       index.wxs
+|   |               |       index.wxss
+|   |               |       shared.d.ts
+|   |               |       shared.js
+|   |               |       utils.d.ts
+|   |               |       utils.js
+|   |               |       
+|   |               \---wxs
+|   |                       add-unit.wxs
+|   |                       array.wxs
+|   |                       bem.wxs
+|   |                       memoize.wxs
+|   |                       object.wxs
+|   |                       style.wxs
+|   |                       utils.wxs
+|   |                       
+|   +---pages
+|   |   +---index
+|   |   |       index.js
+|   |   |       index.json
+|   |   |       index.scss
+|   |   |       index.wxml
+|   |   |       
+|   |   \---playground
+|   |           playground.js
+|   |           playground.json
+|   |           playground.scss
+|   |           playground.wxml
+|   |           
+|   +---styles
+|   |       mixins.scss
+|   |       tokens.scss
+|   |       
+|   \---utils
+|           gesture.ts
+|           request.js
+|           util.ts
+|           
+\---typings
+    |   index.d.ts
+    |   
+    \---types
+        |   index.d.ts
+        |   
+        \---wx
+                index.d.ts
+                lib.wx.api.d.ts
+                lib.wx.app.d.ts
+                lib.wx.behavior.d.ts
+                lib.wx.cloud.d.ts
+                lib.wx.component.d.ts
+                lib.wx.event.d.ts
+                lib.wx.page.d.ts
+                
