@@ -8,11 +8,14 @@ import com.londonmeet.common.utils.JwtUtil;
 import com.londonmeet.pojo.dto.request.WechatLoginRequest;
 import com.londonmeet.pojo.entity.User;
 import com.londonmeet.pojo.vo.LoginUserVO;
+import com.londonmeet.server.config.UploadProperties;
 import com.londonmeet.server.repository.UserRepository;
 import com.londonmeet.server.service.AuthService;
 import com.londonmeet.server.service.WechatCode2SessionClient;
 import com.londonmeet.server.service.WechatCode2SessionClient.WechatSession;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,10 +31,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
     private static final String USER_STATUS_ACTIVE = "ACTIVE";
+    private static final String MOCK_OPENID_PREFIX = "mock-openid-";
 
     private final UserRepository userRepository;
     private final JwtProperties jwtProperties;
+    private final UploadProperties uploadProperties;
     private final WechatCode2SessionClient wechatCode2SessionClient;
 
     /**
@@ -40,10 +46,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public LoginUserVO wechatLogin(WechatLoginRequest request) {
+        log.info("WECHAT_LOGIN STEP 1 resolve session");
         WechatSession session = resolveWechatSession(request);
+        log.info("WECHAT_LOGIN STEP 2 session openid={}", session.getOpenid());
 
         User user = userRepository.findByOpenid(session.getOpenid())
                 .orElseGet(() -> createUser(session, request));
+        log.info("WECHAT_LOGIN STEP 3 user loaded id={}", user.getId());
 
         if (!USER_STATUS_ACTIVE.equals(user.getStatus())) {
             throw new BusinessException(MessageConstant.ACCOUNT_DISABLED);
@@ -58,10 +67,21 @@ public class AuthServiceImpl implements AuthService {
         if (StringUtils.hasText(request.getAvatarUrl())) {
             user.setAvatarUrl(request.getAvatarUrl());
         }
+        if (!StringUtils.hasText(user.getAvatarUrl())) {
+            user.setAvatarUrl(uploadProperties.getDefaultAvatarUrl());
+        }
+        if (!StringUtils.hasText(user.getCoverUrl())) {
+            user.setCoverUrl(uploadProperties.getDefaultCoverUrl());
+        }
         user.setLastLoginAt(LocalDateTime.now());
 
+        log.info("WECHAT_LOGIN STEP 4 save user");
         User savedUser = userRepository.save(user);
+        log.info("WECHAT_LOGIN STEP 5 saved user id={}", savedUser.getId());
+
+        log.info("WECHAT_LOGIN STEP 6 generate token");
         String token = generateToken(savedUser);
+        log.info("WECHAT_LOGIN STEP 7 token generated");
 
         return LoginUserVO.builder()
                 .userId(savedUser.getId())
@@ -97,11 +117,16 @@ public class AuthServiceImpl implements AuthService {
         return User.builder()
                 .openid(session.getOpenid())
                 .unionid(session.getUnionid())
-                .nickname(StringUtils.hasText(request.getNickname()) ? request.getNickname() : "New User")
-                .avatarUrl(request.getAvatarUrl())
+                .nickname(StringUtils.hasText(request.getNickname()) ? request.getNickname() : defaultNickname(session))
+                .avatarUrl(StringUtils.hasText(request.getAvatarUrl()) ? request.getAvatarUrl() : uploadProperties.getDefaultAvatarUrl())
+                .coverUrl(uploadProperties.getDefaultCoverUrl())
                 .role("USER")
                 .status(USER_STATUS_ACTIVE)
                 .lastLoginAt(LocalDateTime.now())
                 .build();
+    }
+
+    private String defaultNickname(WechatSession session) {
+        return session.getOpenid().startsWith(MOCK_OPENID_PREFIX) ? "Mock User" : "New User";
     }
 }

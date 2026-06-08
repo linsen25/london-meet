@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
@@ -43,4 +44,54 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     );
 
     long deleteByEndAtBefore(LocalDateTime expiredBefore);
+
+    long countByCreatorUserId(Long creatorUserId);
+
+    long countByCreatorUserIdAndStatusAndStartAtLessThanEqualAndEndAtAfter(
+            Long creatorUserId,
+            String status,
+            LocalDateTime startAt,
+            LocalDateTime endAt
+    );
+
+    @Query("select coalesce(sum(a.likeCount), 0) from Activity a where a.creatorUserId = :creatorUserId")
+    long sumLikeCountByCreatorUserId(@Param("creatorUserId") Long creatorUserId);
+
+    @Query("""
+            select distinct a
+            from Activity a
+            left join ActivityRegistration r on r.activityId = a.id
+            where a.status = :status
+              and a.endAt > :now
+              and (
+                    a.creatorUserId = :userId
+                    or (r.userId = :userId and r.status in :registrationStatuses)
+                  )
+            """)
+    Page<Activity> findRelatedOngoingActivities(
+            @Param("userId") Long userId,
+            @Param("status") String status,
+            @Param("now") LocalDateTime now,
+            @Param("registrationStatuses") Collection<String> registrationStatuses,
+            Pageable pageable
+    );
+
+    @Query("""
+            select distinct a
+            from Activity a
+            left join ActivityRegistration r on r.activityId = a.id
+            where a.status = :status
+              and a.endAt <= :now
+              and (
+                    a.creatorUserId = :userId
+                    or (r.userId = :userId and r.status in :registrationStatuses)
+                  )
+            order by a.endAt desc
+            """)
+    java.util.List<Activity> findRelatedEndedActivities(
+            @Param("userId") Long userId,
+            @Param("status") String status,
+            @Param("now") LocalDateTime now,
+            @Param("registrationStatuses") Collection<String> registrationStatuses
+    );
 }

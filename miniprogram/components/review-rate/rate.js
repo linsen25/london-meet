@@ -7,7 +7,7 @@ function buildRingSeries(items) {
   return items.map((item, index) => {
     const outer = `${baseRadius - index * gap}%`;
     const inner = `${baseRadius - index * gap - 7}%`;
-    const percent = Math.max(0, Math.min(100, (item.value / 5) * 100));
+    const percent = Math.max(0, Math.min(100, (Number(item.value || 0) / 5) * 100));
 
     return {
       type: "pie",
@@ -38,7 +38,7 @@ function buildRingSeries(items) {
   });
 }
 
-function getOption(title, items, average) {
+function getOption(items, average) {
   return {
     backgroundColor: "transparent",
     animation: true,
@@ -61,7 +61,7 @@ function getOption(title, items, average) {
         left: "center",
         top: "43%",
         style: {
-          text:"综合评分",
+          text: "综合评分",
           fill: "rgba(255,255,255,0.72)",
           fontSize: 12
         }
@@ -70,9 +70,26 @@ function getOption(title, items, average) {
   };
 }
 
+function cloneItems(items) {
+  return items.map((item) => ({ ...item }));
+}
+
+const DEFAULT_ACTIVITY_ITEMS = [
+  { key: "organization", label: "组织安排", value: 0, color: "#07C160" },
+  { key: "experience", label: "活动体验", value: 0, color: "#3B82F6" },
+  { key: "atmosphere", label: "氛围互动", value: 0, color: "#A855F7" },
+  { key: "match", label: "内容匹配", value: 0, color: "#F59E0B" }
+];
+
+const DEFAULT_MEMBER_ITEMS = [
+  { key: "punctual", label: "准时守约", value: 0, color: "#07C160" },
+  { key: "communication", label: "沟通配合", value: 0, color: "#3B82F6" },
+  { key: "friendly", label: "友善礼貌", value: 0, color: "#A855F7" },
+  { key: "participation", label: "参与投入", value: 0, color: "#F59E0B" }
+];
+
 Component({
   properties: {
-    // activity | member
     mode: {
       type: String,
       value: "activity"
@@ -80,6 +97,20 @@ Component({
     itemTitle: {
       type: String,
       value: "评分"
+    },
+    itemId: {
+      type: String,
+      value: ""
+    },
+    activityId: {
+      type: Number,
+      optionalTypes: [String],
+      value: null
+    },
+    targetId: {
+      type: Number,
+      optionalTypes: [String],
+      value: null
     }
   },
 
@@ -87,21 +118,8 @@ Component({
     ec: {
       onInit: null
     },
-
-    chart: null,
-
-    activityItems: [
-      { key: "experience", label: "活动体验", value: 0, color: "#07C160" },
-      { key: "organization", label: "组织安排", value: 0, color: "#3B82F6" },
-      { key: "atmosphere", label: "氛围互动", value: 0, color: "#A855F7" },
-      { key: "match", label: "活动匹配度", value: 0, color: "#F59E0B" }
-    ],
-
-    memberItems: [
-      { key: "punctual", label: "准时履约", value: 0, color: "#07C160" },
-      { key: "communication", label: "沟通配合", value: 0, color: "#3B82F6" },
-      { key: "performance", label: "活动表现", value: 0, color: "#F59E0B" }
-    ]
+    activityItems: cloneItems(DEFAULT_ACTIVITY_ITEMS),
+    memberItems: cloneItems(DEFAULT_MEMBER_ITEMS)
   },
 
   lifetimes: {
@@ -144,11 +162,16 @@ Component({
       if (!this.chart) return;
 
       const items = this.getCurrentItems();
-      const avg = this.getAverage(items);
+      this.chart.setOption(getOption(items, this.getAverage(items)), true);
+    },
 
-      this.chart.setOption(
-        getOption(this.properties.itemTitle, items, avg),
-        true
+    resetScores() {
+      this.setData(
+        {
+          activityItems: cloneItems(DEFAULT_ACTIVITY_ITEMS),
+          memberItems: cloneItems(DEFAULT_MEMBER_ITEMS)
+        },
+        () => this.refreshChart()
       );
     },
 
@@ -164,32 +187,53 @@ Component({
           ? `memberItems[${index}].value`
           : `activityItems[${index}].value`;
 
-      this.setData(
-        {
-          [field]: value
-        },
-        () => {
-          this.refreshChart();
-        }
-      );
+      this.setData({ [field]: value }, () => {
+        this.refreshChart();
+      });
     },
 
     onSubmit() {
       const items = this.getCurrentItems();
-      const average = this.getAverage(items);
+      if (items.some((item) => Number(item.value || 0) <= 0)) {
+        wx.showToast({
+          title: "请完成全部评分",
+          icon: "none"
+        });
+        return;
+      }
 
-      this.triggerEvent("submit", {
-        mode: this.data.mode,
-        title: this.properties.itemTitle,
-        average,
-        items
+      const average = this.getAverage(items);
+      const title = this.properties.itemTitle || "该项目";
+
+      wx.showModal({
+        title: "确认提交评价",
+        content: `确定提交对「${title}」的评价吗？提交后这条待评价会完成。`,
+        confirmText: "提交",
+        cancelText: "再想想",
+        success: (res) => {
+          if (!res.confirm) return;
+
+          this.triggerEvent("submit", {
+            mode: this.data.mode,
+            title,
+            itemId: this.properties.itemId,
+            activityId: this.properties.activityId,
+            targetId: this.properties.targetId,
+            average,
+            items: items.map((item) => ({
+              key: item.key,
+              label: item.label,
+              value: Number(item.value || 0)
+            }))
+          });
+        }
       });
     }
   },
 
   observers: {
     mode() {
-      this.refreshChart();
+      this.resetScores();
     },
     itemTitle() {
       this.refreshChart();

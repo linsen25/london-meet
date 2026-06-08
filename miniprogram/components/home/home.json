@@ -5,6 +5,7 @@
     "mf-button": "/components/mf-button/index",
     "mf-shell": "/components/mf-shell/index",
     "mf-template": "/components/mf-template/index",
-    "mf-segment-tabs": "/components/mf-segment-tabs/index"
+    "mf-segment-tabs": "/components/mf-segment-tabs/index",
+    "van-icon": "@vant/weapp/icon/index"
   }
 }

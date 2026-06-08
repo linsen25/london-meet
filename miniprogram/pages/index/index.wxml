@@ -2,7 +2,7 @@
   <view wx:if="{{!isLoggedIn}}" class="login-screen">
     <view class="login-hero">
       <image class="login-logo" src="/assets/logo.png" mode="aspectFill" />
-      <text class="login-subtitle">发现身边的有趣活动</text>
+      <text class="login-subtitle">测试版</text>
     </view>
 
     <mf-button
@@ -32,13 +32,15 @@
 
     <view class="tab-panel" wx:if="{{activeTab === 'home'}}">
       <home-view
+        id="homeView"
         bind:openpost="onOpenPost"
         bind:openpendingreview="onOpenPendingReview"
         bind:openreviewrate="onOpenReviewRate"
+        bind:opennotifications="onOpenNotifications"
       />
     </view>
 
-    <view class="bottom-nav">
+    <view wx:if="{{!showPost && !showPendingReview && !showNotifications && !showReviewRate && !showCreatePost && !showSearch}}" class="bottom-nav">
       <view
         class="bottom-nav__item {{activeTab === 'activity' ? 'is-active' : ''}}"
         bindtap="onTabActivity"
@@ -92,10 +94,21 @@
     <pending-review bind:close="onClosePendingReview" />
   </view>
 
+  <view wx:if="{{showNotifications}}" class="notification-overlay">
+    <notification-center
+      bind:close="onCloseNotifications"
+      bind:openrelated="onOpenNotificationRelated"
+      bind:unreadchange="onNotificationUnreadChange"
+    />
+  </view>
+
   <view wx:if="{{showReviewRate}}" class="reviewrate-overlay">
     <review-rate
       mode="{{reviewRateMode}}"
       itemTitle="{{reviewRateTitle}}"
+      itemId="{{reviewRateItemId}}"
+      activityId="{{reviewRateActivityId}}"
+      targetId="{{reviewRateTargetId}}"
       bind:close="onCloseReviewRate"
       bind:submit="onSubmitReviewRate"
     />

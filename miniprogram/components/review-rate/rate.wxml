@@ -1,29 +1,23 @@
 <view class="rate-root">
-  <!-- 顶部栏 -->
   <view class="rate-topbar">
     <view class="back-wrap" bindtap="onBack">
       <view class="back-chevron-wrap">
-        <text class="back-chevron">‹</text>
+        <van-icon name="arrow-left" size="22px" color="#FFFFFF" />
       </view>
       <view class="back-title-wrap">
-        <text class="back-title">
-          {{mode === 'member' ? '评价成员' : '评价活动'}}
-        </text>
+        <text class="back-title">{{mode === 'member' ? '评价成员' : '评价活动'}}</text>
       </view>
     </view>
   </view>
 
-  <!-- 标题卡片 -->
   <view class="rate-shell rate-shell--title">
     <view class="rate-item-title">{{itemTitle}}</view>
   </view>
 
-  <!-- 图表卡片 -->
   <view class="rate-shell rate-shell--chart">
     <ec-canvas id="rateChart" canvas-id="rateChart" ec="{{ec}}" />
   </view>
 
-  <!-- 评分项卡片 -->
   <view class="rate-shell rate-shell--form">
     <view
       wx:for="{{mode === 'member' ? memberItems : activityItems}}"
@@ -48,7 +42,6 @@
     </view>
   </view>
 
-  <!-- 提交按钮 -->
   <view class="rate-shell rate-shell--submit">
     <mf-button
       class="submit-btn"

@@ -7,20 +7,9 @@
 
 .home-page {
   position: relative; /* ✅ overlay 定位参照 */
-  padding: 24rpx 24rpx 120rpx;
+  padding: 0 0 120rpx;
   box-sizing: border-box;
 }
-
-/* ✅ 覆盖层：不占布局 */
-.home-gesture-strip--overlay {
-  position: absolute;
-  top: 24rpx;
-  left: 24rpx;
-  right: 24rpx;
-  z-index: 10;
-  pointer-events: auto;
-}
-
 /* 上下堆叠 */
 .home-stack {
   display: flex;
@@ -35,7 +24,7 @@
    .profile-hero{
     width: 100%;
     height: 100%;
-    border-radius: 18rpx;
+    border-radius: 0 0 18rpx 18rpx;
     overflow: hidden;
     position: relative;
   
@@ -67,17 +56,50 @@
     width: 64rpx;
     height: 64rpx;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: 10rpx;
-    z-index: 10;
+    z-index: 20;
   }
-  
-  .more-line{
-    width: 36rpx;
-    height: 4rpx;
+
+  .profile-notification{
+    position: absolute;
+    top: 24rpx;
+    right: 24rpx;
+    width: 64rpx;
+    height: 64rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+  }
+
+  .top-icon-dot{
+    position: absolute;
+    top: 10rpx;
+    right: 10rpx;
+    width: 14rpx;
+    height: 14rpx;
     border-radius: 999rpx;
-    background: rgba(255,255,255,0.85);
+    background: #FF3B30;
+    border: 2rpx solid rgba(0,0,0,0.45);
+    box-sizing: border-box;
+  }
+
+  .notification-dot{
+    position: absolute;
+    right: -4rpx;
+    top: -4rpx;
+    min-width: 28rpx;
+    height: 28rpx;
+    padding: 0 7rpx;
+    box-sizing: border-box;
+    border-radius: 9999rpx;
+    background: #FF3B30;
+    color: #fff;
+    font-size: 18rpx;
+    font-weight: 900;
+    line-height: 28rpx;
+    text-align: center;
   }
   
   .profile-body{
@@ -146,13 +168,126 @@
   }
   
   .pill{
+    max-width: 220rpx;
     padding: 10rpx 18rpx;
     border-radius: 9999rpx;
     background: rgba(0,0,0,0.35);
     color: rgba(255,255,255,0.92);
     font-size: 24rpx;
     font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+
+.edit-profile-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0,0,0,0.45);
+}
+
+.edit-profile-panel {
+  width: 100%;
+  padding: 28rpx 24rpx calc(32rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  border-radius: 24rpx 24rpx 0 0;
+  background: #2E2E2E;
+  display: flex;
+  flex-direction: column;
+  gap: 22rpx;
+}
+
+.edit-profile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.edit-profile-title {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.edit-profile-close {
+  width: 64rpx;
+  height: 64rpx;
+  color: rgba(255,255,255,0.82);
+  font-size: 48rpx;
+  line-height: 58rpx;
+  text-align: center;
+}
+
+.edit-cover-preview {
+  position: relative;
+  height: 220rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  padding: 18rpx;
+  box-sizing: border-box;
+}
+
+.edit-cover-text {
+  position: absolute;
+  right: 18rpx;
+  bottom: 18rpx;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(0,0,0,0.52);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.edit-label {
+  color: rgba(255,255,255,0.72);
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.edit-motto {
+  width: 100%;
+  min-height: 96rpx;
+  padding: 18rpx;
+  box-sizing: border-box;
+  border-radius: 14rpx;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 28rpx;
+}
+
+.edit-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.edit-tag-input {
+  width: calc((100% - 24rpx) / 3);
+  min-width: 0;
+  height: 72rpx;
+  padding: 0 18rpx;
+  box-sizing: border-box;
+  border-radius: 999rpx;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 26rpx;
+}
+
+.edit-actions {
+  margin-top: 6rpx;
+}
   
    /* 这一行：左 stats + 右 Edit（同一行），并且整体往下挪 */
    .profile-bottom{
@@ -217,6 +352,105 @@
 
 .ico {
   font-size: 30rpx;
+}
+
+.pending-entry-icon {
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.entry-icon-dot {
+  position: absolute;
+  top: 2rpx;
+  right: 2rpx;
+  width: 13rpx;
+  height: 13rpx;
+  border-radius: 999rpx;
+  background: #FF3B30;
+  border: 2rpx solid rgb(46,46,46);
+  box-sizing: border-box;
+}
+
+.more-menu-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 13000;
+  background: rgba(0,0,0,0.42);
+}
+
+.more-menu-panel {
+  width: 560rpx;
+  height: 100%;
+  padding: calc(32rpx + env(safe-area-inset-top)) 24rpx calc(32rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: rgb(33,33,33);
+  box-shadow: 18rpx 0 44rpx rgba(0,0,0,0.28);
+  display: flex;
+  flex-direction: column;
+  animation: moreMenuIn 180ms ease-out both;
+}
+
+@keyframes moreMenuIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.more-menu-head {
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.more-menu-title {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.more-menu-close {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.more-menu-list {
+  margin-top: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.menu-entry-icon {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.more-menu-contact {
+  margin-top: auto;
+  padding-top: 28rpx;
+  border-top: 1rpx solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.62);
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.contact-email {
+  color: rgba(255,255,255,0.9);
+  font-size: 26rpx;
 }
 
 .arrow {
@@ -325,6 +559,14 @@
 .outer2-masonry{
   column-count: 2;
   column-gap: 12rpx;
+}
+
+.outer2-empty {
+  padding: 80rpx 24rpx;
+  color: rgba(255,255,255,0.62);
+  font-size: 26rpx;
+  font-weight: 700;
+  text-align: center;
 }
 
 .m-item{

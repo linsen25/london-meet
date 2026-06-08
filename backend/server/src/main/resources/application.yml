@@ -5,6 +5,11 @@ spring:
   application:
     name: london-meet-backend
 
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 10MB
+
   datasource:
     url: jdbc:mysql://localhost:3306/london_meet?useSSL=false&serverTimezone=America/Toronto&allowPublicKeyRetrieval=true
     username: root
@@ -50,8 +55,14 @@ jwt:
   expiration: 604800000
 
 wechat:
-  # Keep true while testing the backend without real mini program pages.
-  # With mock enabled, pass either openid directly or pass code such as "mock:test-user".
-  mock-enabled: ${WECHAT_MOCK_ENABLED:true}
-  app-id: ${WECHAT_APP_ID:}
-  secret: ${WECHAT_APP_SECRET:}
+  mock-enabled: true
+  app-id: wx1f685f2109d776a0
+  secret: edd9927fb9d9e2fdc2113fd014dd95d2
+  
+upload:
+  avatar-dir: ${AVATAR_UPLOAD_DIR:uploads/avatar}
+  avatar-url-prefix: /uploads/avatar
+  default-avatar-url: /uploads/avatar/default-avatar.png
+  cover-dir: ${COVER_UPLOAD_DIR:uploads/cover}
+  cover-url-prefix: /uploads/cover
+  default-cover-url: https://dummyimage.com/1200x800/2b2b2b/ffffff.png&text=Cover

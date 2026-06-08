@@ -1,241 +1,56 @@
-/**
- * ============================================
- * Component: Home（Main 右屏）
- * - 只负责 Home UI
- * - 不处理全局切屏手势（由 pages/index 统一管理）
- *
- * 事件协议（由 Index 接收）：
- * - passthroughstart/move/end -> 手势透传
- * - openpost -> 点击卡片抛出 {id}
- * ============================================
- */
-
-const now = Date.now();
-const day = 24 * 60 * 60 * 1000;
+const { fetchUserProfile, updateUserProfile, uploadProfileCover } = require("../../api/userProfile");
+const { fetchMyOngoingActivityPosts, fetchPendingReviews } = require("../../api/activity");
+const { fetchReviewTasks } = require("../../api/review");
+const { fetchNotificationUnreadCount } = require("../../api/notification");
 
 Component({
   data: {
-    // 8行规则（稳定版）
     rowH: "160rpx",
     halfRowH: "80rpx",
     twoRowH: "320rpx",
     threeRowH: "480rpx",
     sevenHalfRowH: "1200rpx",
-    
 
-    // ✅ 小红书式 Profile（先用假数据占位）
     profile: {
       coverUrl: "https://dummyimage.com/1200x800/2b2b2b/ffffff.png&text=Cover",
       avatarUrl: "https://dummyimage.com/300x300/ffffff/111111.png&text=Avatar",
-      name: "森森",
-      redId: "794640446",
-      motto: "来吧让我多认识些有意思的 people",
-      age: 21,
-      region: "加拿大 ON",
+      name: "MeetFun User",
+      userId: "",
+      motto: "来吧，让我认识更多有趣的人",
+      tags: [],
       stats: {
-        myEvents: 12,
-        ongoing: 3,
-        likes: 99
+        myEvents: 0,
+        ongoing: 0,
+        likes: 0
       }
     },
-    reviewPosts: [
-      {
-        _id: "r1",
-        title: "羽毛球局",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=A",
-        startText: "2026-03-06 18:00",
-        endText: "2026-03-06 20:00"
-      },
-      {
-        _id: "r2",
-        title: "咖啡聊天",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=B",
-        startText: "2026-03-07 14:00",
-        endText: "2026-03-07 16:00"
-      },
-      {
-        _id: "r3",
-        title: "剧本杀组局",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=C",
-        startText: "2026-03-08 19:30",
-        endText: "2026-03-08 23:00"
-      }
-    ],
+    profileLoading: false,
+    showEditProfile: false,
+    editProfileSaving: false,
+    editMotto: "",
+    editTags: ["", "", ""],
+    unreadNotificationCount: 0,
+    hasUnreadNotifications: false,
+    pendingReviewCount: 0,
+    showMoreMenu: false,
 
-    // 保留你原本数据结构（示例）
-    posts: [
-      {
-        _id: "p1",
-        title: "主页帖子 1（示例）",
-        authorName: "Alice",
-        likeCount: 12,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=A",
-        startAt: now - day * 2,
-        endAt: now + day * 5,
-        progressGif: ""
-      }
-    ],
-
-    // ========== Outer2：Segment + 瀑布流（按 Activity 的数据结构）==========
     outer2Tabs: [
       { key: "ongoing", label: "活动中" },
       { key: "review", label: "待评价" }
     ],
     outer2TabValue: "ongoing",
-
-    // ✅直接用 Activity 的 mock（一模一样）
-    outer2Posts: [
-      {
-        _id: "a1",
-        title: "活动帖子 1（示例）延长延长延长",
-        authorName: "Alice",
-        likeCount: 12,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=A",
-        startAt: now - day * 2,
-        endAt: now + day * 5,
-        progressGif: ""
-      },
-      {
-        _id: "a2",
-        title: "活动帖子 2（示例）",
-        authorName: "Bob",
-        likeCount: 34,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=B",
-        startAt: now - day * 1,
-        endAt: now + day * 4,
-        progressGif: ""
-      },
-      {
-        _id: "a3",
-        title: "活动帖子 3（示例）",
-        authorName: "Cindy",
-        likeCount: 56,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=C",
-        startAt: now - day * 3,
-        endAt: now + day * 2,
-        progressGif: ""
-      },
-      {
-        _id: "a4",
-        title: "活动帖子 4（示例）",
-        authorName: "David",
-        likeCount: 78,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=D",
-        startAt: now - day * 2,
-        endAt: now + day * 1,
-        progressGif: ""
-      },
-      {
-        _id: "a5",
-        title: "活动帖子 5（示例）",
-        authorName: "Evan",
-        likeCount: 90,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=E",
-        startAt: now - day * 4,
-        endAt: now + day * 6,
-        progressGif: ""
-      },
-      {
-        _id: "a6",
-        title: "活动帖子 6（示例）",
-        authorName: "Fiona",
-        likeCount: 21,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=F",
-        startAt: now - day * 1,
-        endAt: now + day * 3,
-        progressGif: ""
-      },
-      {
-        _id: "a7",
-        title: "活动帖子 7（示例）活动帖子 7（示例）活动帖子 7（示例）活动帖子 7（示例）活动帖子 7（示例）活动帖子 7（示例）",
-        authorName: "Gina",
-        likeCount: 43,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=G",
-        startAt: now - day * 2,
-        endAt: now + day * 7,
-        progressGif: ""
-      },
-      {
-        _id: "a8",
-        title: "活动帖子 8（示例）",
-        authorName: "Henry",
-        likeCount: 65,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=H",
-        startAt: now - day * 5,
-        endAt: now + day * 2,
-        progressGif: ""
-      },
-      {
-        _id: "a9",
-        title: "活动帖子 9（示例）",
-        authorName: "Iris",
-        likeCount: 87,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=I",
-        startAt: now - day * 3,
-        endAt: now + day * 5,
-        progressGif: ""
-      },
-      {
-        _id: "a10",
-        title: "活动帖子 10（示例）",
-        authorName: "Jack",
-        likeCount: 109,
-        coverUrl: "https://dummyimage.com/600x800/ddd/111.png&text=cover",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=J",
-        startAt: now - day * 2,
-        endAt: now + day * 4,
-        progressGif: ""
-      }
-    ],
+    outer2Loading: false,
+    reviewTasksLoading: false,
     outer2ReviewTabs: [
       { key: "event", label: "评价活动" },
       { key: "member", label: "评价成员" }
     ],
     outer2ReviewTabValue: "event",
-    
-    reviewEventPosts: [
-      {
-        _id: "re1",
-        title: "羽毛球局",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=E1",
-        startText: "2026-03-06 18:00",
-        endText: "2026-03-06 20:00"
-      },
-      {
-        _id: "re2",
-        title: "咖啡聊天",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=E2",
-        startText: "2026-03-07 14:00",
-        endText: "2026-03-07 16:00"
-      }
-    ],
-    
-    reviewMemberPosts: [
-      {
-        _id: "rm1",
-        name: "Alice",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=A",
-        scoreText: "综合评分：88/100",
-        speedText: "时效评分：92/100"
-      },
-      {
-        _id: "rm2",
-        name: "Bob",
-        avatarUrl: "https://dummyimage.com/100x100/ddd/111.png&text=B",
-        scoreText: "综合评分：76/100",
-        speedText: "时效评分：85/100"
-      }
-    ]
+
+    outer2Posts: [],
+
+    reviewEventPosts: [],
+    reviewMemberPosts: []
   },
 
   lifetimes: {
@@ -252,30 +67,279 @@ Component({
         threeRowH: `${(rowRpx * 3).toFixed(2)}rpx`,
         sevenHalfRowH: `${(rowRpx * 7.5).toFixed(2)}rpx`
       });
+
+      this.loadProfile();
+      this.loadMyOngoingActivities();
+      this.loadPendingReviewCount();
+      this.loadReviewTasks();
+      this.loadNotificationUnreadCount();
     }
   },
 
   methods: {
-    // ===== 透传触摸（保留）=====
+    noop() {},
+
     passTouchStart(e) {
       this.triggerEvent("passthroughstart", e);
     },
+
     passTouchMove(e) {
       this.triggerEvent("passthroughmove", e);
     },
+
     passTouchEnd(e) {
       this.triggerEvent("passthroughend", e);
     },
+
     passTouchCancel(e) {
       this.triggerEvent("passthroughend", e);
     },
-    onTapReviewItem(e) {
-      const id = e.currentTarget.dataset.id;
-      console.log("tap review item:", id);
-      // 你之后要跳详情/评价页，就在这里写
+
+    loadProfile() {
+      if (this.data.profileLoading) return;
+      this.setData({ profileLoading: true });
+
+      fetchUserProfile()
+        .then((profile) => {
+          this.setData({ profile });
+        })
+        .catch((err) => {
+          console.error("[profile load failed]", err);
+        })
+        .finally(() => {
+          this.setData({ profileLoading: false });
+        });
     },
 
-    // ===== 打开帖子（保留）=====
+    loadMyOngoingActivities() {
+      if (this.data.outer2Loading) return;
+      this.setData({ outer2Loading: true });
+
+      fetchMyOngoingActivityPosts({
+        page: 1,
+        pageSize: 30
+      })
+        .then((res) => {
+          this.setData({
+            outer2Posts: res.list || []
+          });
+        })
+        .catch((err) => {
+          console.error("[my ongoing activities load failed]", err);
+          this.setData({
+            outer2Posts: []
+          });
+        })
+        .finally(() => {
+          this.setData({ outer2Loading: false });
+        });
+    },
+
+    loadPendingReviewCount() {
+      fetchPendingReviews()
+        .then((items) => {
+          this.setData({
+            pendingReviewCount: (items || []).length
+          });
+        })
+        .catch((err) => {
+          console.error("[pending review count load failed]", err);
+          this.setData({ pendingReviewCount: 0 });
+        });
+    },
+
+    loadReviewTasks(mode) {
+      if (this.data.reviewTasksLoading) return;
+
+      const requestMode = mode || "";
+      this.setData({ reviewTasksLoading: true });
+
+      fetchReviewTasks({ mode: requestMode })
+        .then((items) => {
+          const tasks = items || [];
+          const nextData = {};
+
+          if (!requestMode || requestMode === "activity") {
+            nextData.reviewEventPosts = tasks.filter((item) => item.mode === "activity");
+          }
+          if (!requestMode || requestMode === "member") {
+            nextData.reviewMemberPosts = tasks.filter((item) => item.mode === "member");
+          }
+
+          this.setData(nextData);
+        })
+        .catch((err) => {
+          console.error("[review tasks load failed]", err);
+          const nextData = {};
+          if (!requestMode || requestMode === "activity") {
+            nextData.reviewEventPosts = [];
+          }
+          if (!requestMode || requestMode === "member") {
+            nextData.reviewMemberPosts = [];
+          }
+          this.setData(nextData);
+        })
+        .finally(() => {
+          this.setData({ reviewTasksLoading: false });
+        });
+    },
+
+    loadNotificationUnreadCount() {
+      fetchNotificationUnreadCount()
+        .then((count) => {
+          this.setData({
+            unreadNotificationCount: count,
+            hasUnreadNotifications: count > 0
+          });
+        })
+        .catch((err) => {
+          console.error("[notification unread count load failed]", err);
+          this.setData({
+            unreadNotificationCount: 0,
+            hasUnreadNotifications: false
+          });
+        });
+    },
+
+    updateNotificationUnreadCount(count) {
+      const unreadCount = Number(count) || 0;
+      this.setData({
+        unreadNotificationCount: unreadCount,
+        hasUnreadNotifications: unreadCount > 0
+      });
+    },
+
+    onTapMore() {
+      this.setData({ showMoreMenu: true });
+    },
+
+    onCloseMoreMenu() {
+      this.setData({ showMoreMenu: false });
+    },
+
+    onTapReport() {
+      wx.showToast({
+        title: "举报功能待接入",
+        icon: "none"
+      });
+    },
+
+    onTapFeedback() {
+      wx.showToast({
+        title: "意见箱待接入",
+        icon: "none"
+      });
+    },
+
+    onTapNotifications() {
+      this.triggerEvent("opennotifications");
+    },
+
+    onEditProfile() {
+      const tags = (this.data.profile.tags || []).slice(0, 3);
+      while (tags.length < 3) tags.push("");
+
+      this.setData({
+        showEditProfile: true,
+        editMotto: this.data.profile.motto || "",
+        editTags: tags
+      });
+    },
+
+    onCloseEditProfile() {
+      if (this.data.editProfileSaving) return;
+      this.setData({ showEditProfile: false });
+    },
+
+    onEditMottoInput(e) {
+      this.setData({ editMotto: (e.detail && e.detail.value) || "" });
+    },
+
+    onEditTagInput(e) {
+      const index = Number(e.currentTarget.dataset.index);
+      const value = (e.detail && e.detail.value) || "";
+      const editTags = this.data.editTags.slice();
+      editTags[index] = value;
+      this.setData({ editTags });
+    },
+
+    onChooseCover() {
+      if (this.data.editProfileSaving) return;
+
+      wx.chooseMedia({
+        count: 1,
+        mediaType: ["image"],
+        sourceType: ["album", "camera"],
+        success: (res) => {
+          const file = res.tempFiles && res.tempFiles[0];
+          const filePath = file && file.tempFilePath;
+          if (!filePath) return;
+
+          this.setData({ editProfileSaving: true });
+          wx.showLoading({ title: "上传中...", mask: true });
+
+          uploadProfileCover(filePath)
+            .then((coverUrl) => {
+              this.setData({
+                profile: {
+                  ...this.data.profile,
+                  coverUrl
+                }
+              });
+            })
+            .catch((err) => {
+              wx.showToast({
+                title: err.message || "上传失败",
+                icon: "none"
+              });
+            })
+            .finally(() => {
+              wx.hideLoading();
+              this.setData({ editProfileSaving: false });
+            });
+        }
+      });
+    },
+
+    onSaveEditProfile() {
+      if (this.data.editProfileSaving) return;
+
+      const tags = (this.data.editTags || [])
+        .map((tag) => (tag || "").trim())
+        .filter(Boolean);
+
+      if (tags.length > 3) {
+        wx.showToast({ title: "标签最多 3 个", icon: "none" });
+        return;
+      }
+      if (tags.some((tag) => tag.length > 10)) {
+        wx.showToast({ title: "每个标签最多 10 个字", icon: "none" });
+        return;
+      }
+
+      this.setData({ editProfileSaving: true });
+
+      updateUserProfile({
+        motto: this.data.editMotto,
+        tags
+      })
+        .then((profile) => {
+          this.setData({
+            profile,
+            showEditProfile: false
+          });
+        })
+        .catch((err) => {
+          wx.showToast({
+            title: err.message || "保存失败",
+            icon: "none"
+          });
+        })
+        .finally(() => {
+          this.setData({ editProfileSaving: false });
+        });
+    },
+
     onTapCard(e) {
       const id = e.detail && e.detail.id;
       if (!id) return;
@@ -300,67 +364,77 @@ Component({
       this.triggerEvent("likechange", detail);
     },
 
-    // ===== 头图：更多（先占位，不做逻辑）=====
-    onTapMore() {
-      console.log("tap: more");
-    },
-
-    // ===== Edit Profile（先占位，不做逻辑）=====
-    onEditProfile() {
-      console.log("tap: edit profile");
-    },
-
-    // ===== 下面三块点击（保留）=====
-    onTapTag() {
-      console.log("tap: tag");
-    },
     onTapPendingReview() {
       this.triggerEvent("openpendingreview");
     },
-    onTapDesc() {
-      console.log("tap: desc");
-    },
-    onTapCredit() {
-      console.log("tap: credit");
-    },
 
-    // ===== Outer2 Segment 切换（保留）=====
     onOuter2TabChange(e) {
       const value = e && e.detail ? e.detail.value : "";
       if (!value) return;
       this.setData({ outer2TabValue: value });
-
-      // 你后续要切换不同列表，就在这换 outer2Posts
-      // 现在先不动数据，保证 UI 正常
+      if (value === "ongoing") {
+        this.loadMyOngoingActivities();
+      } else if (value === "review") {
+        this.loadReviewTasks(this.data.outer2ReviewTabValue === "member" ? "member" : "activity");
+      }
     },
+
     onOuter2ReviewTabChange(e) {
       const value = e && e.detail ? e.detail.value : "";
       if (!value) return;
       this.setData({ outer2ReviewTabValue: value });
+      this.loadReviewTasks(value === "member" ? "member" : "activity");
     },
-    
+
     onTapReviewEventItem(e) {
       const id = e.currentTarget.dataset.id;
-      const item = this.data.reviewEventPosts.find(v => v._id === id);
+      const item = this.data.reviewEventPosts.find((v) => v._id === id);
       if (!item) return;
-    
+
       this.triggerEvent("openreviewrate", {
         mode: "activity",
         itemTitle: item.title,
-        itemId: item._id
+        itemId: item._id,
+        activityId: item.activityId,
+        targetId: item.targetId
       });
     },
-    
+
     onTapReviewMemberItem(e) {
       const id = e.currentTarget.dataset.id;
-      const item = this.data.reviewMemberPosts.find(v => v._id === id);
+      const item = this.data.reviewMemberPosts.find((v) => v._id === id);
       if (!item) return;
-    
+
       this.triggerEvent("openreviewrate", {
         mode: "member",
         itemTitle: item.name,
-        itemId: item._id
+        itemId: item._id,
+        activityId: item.activityId,
+        targetId: item.targetId
       });
     },
+
+    markReviewCompleted(detail) {
+      const itemId = detail && detail.itemId;
+      const activityId = detail && detail.activityId;
+      const targetId = detail && detail.targetId;
+
+      if (detail && detail.mode === "member") {
+        this.setData({
+          reviewMemberPosts: this.data.reviewMemberPosts.filter((item) => {
+            if (itemId && item._id === itemId) return false;
+            return !(String(item.activityId) === String(activityId) && String(item.targetId) === String(targetId));
+          })
+        });
+        return;
+      }
+
+      this.setData({
+        reviewEventPosts: this.data.reviewEventPosts.filter((item) => {
+          if (itemId && item._id === itemId) return false;
+          return String(item.activityId) !== String(activityId);
+        })
+      });
+    }
   }
 });

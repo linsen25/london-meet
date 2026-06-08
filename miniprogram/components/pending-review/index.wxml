@@ -1,51 +1,54 @@
 <view class="review-root">
-
-  <!-- 顶部栏：左上 chevron + 标题都可点击返回 -->
   <view class="review-topbar">
-    <view class="back-wrap" bindtap="onBack">
-      <text class="back-chevron">‹</text>
-      <text class="back-title">待审核</text>
+    <view class="topbar-side topbar-left" bindtap="onBack">
+      <van-icon name="arrow-left" size="22px" color="#FFFFFF" />
+      <text class="back-text">返回</text>
     </view>
+    <view class="topbar-title">待审核</view>
+    <view class="topbar-side"></view>
   </view>
 
-  <!-- 列表 -->
   <view class="review-list">
-    <mf-template
-      wx:for="{{reviewers}}"
-      wx:key="id"
-      rows="1"
-      density="md"
-      align="left"
-      bg="rgb(46,46,46)"
-    >
-      <!-- 左：圆形头像 -->
-      <view slot="left">
-        <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
-      </view>
+    <view wx:if="{{loading}}" class="review-empty">加载中...</view>
+    <view wx:elif="{{!reviewers.length}}" class="review-empty">暂无待审核报名</view>
 
-      <!-- 中：微信名 + 评分 -->
-      <view class="mid">
-        <view class="t1">{{item.name}}</view>
-        <view class="t2">
-          <view>综合评分：{{item.score}}/100</view>
-          <view>时效评分：{{item.speed}}/100</view>
-        </view>
-      </view>
-
-      <!-- 右：状态文字 + iPhone 风格 switch -->
-      <view slot="right" class="switch-wrap">
-        <view class="state-text {{item.approved ? 'ok' : 'no'}}">
-          {{item.approved ? '已通过' : '未通过'}}
+    <block wx:else>
+      <mf-template
+        wx:for="{{reviewers}}"
+        wx:key="registrationId"
+        rows="1"
+        density="md"
+        align="left"
+        bg="rgb(46,46,46)"
+      >
+        <view slot="left">
+          <image class="avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
         </view>
 
-        <switch
-          checked="{{item.approved}}"
-          bindchange="onSwitch"
-          data-index="{{index}}"
-          color="#07C160"
-        />
-      </view>
-    </mf-template>
+        <view class="mid">
+          <view class="t1">{{item.nickname}}</view>
+          <view class="activity-title">{{item.activityTitle}}</view>
+          <view class="score-row">
+            <text>综合 {{item.overallRating}}/5</text>
+            <text>时效 {{item.timelinessRating}}/5</text>
+          </view>
+        </view>
+
+        <view slot="right" class="review-actions">
+          <button
+            class="review-action review-action--reject"
+            data-id="{{item.registrationId}}"
+            disabled="{{actingId}}"
+            bindtap="onReject"
+          >拒绝</button>
+          <button
+            class="review-action review-action--approve"
+            data-id="{{item.registrationId}}"
+            disabled="{{actingId}}"
+            bindtap="onApprove"
+          >通过</button>
+        </view>
+      </mf-template>
+    </block>
   </view>
-
 </view>

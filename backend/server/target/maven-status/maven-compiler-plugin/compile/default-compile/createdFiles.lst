@@ -1,8 +1,8 @@
 com\londonmeet\server\service\AuthService.class
-com\londonmeet\server\security\JwtAuthenticationFilter.class
 com\londonmeet\server\repository\UserRepository.class
+com\londonmeet\server\controller\user\AuthController.class
+com\londonmeet\server\controller\user\HealthController.class
+com\londonmeet\server\security\JwtAuthenticationFilter.class
 com\londonmeet\server\ServerApplication.class
 com\londonmeet\server\service\impl\AuthServiceImpl.class
 com\londonmeet\server\config\SecurityConfig.class
-com\londonmeet\server\controller\user\AuthController.class
-com\londonmeet\server\controller\user\HealthController.class

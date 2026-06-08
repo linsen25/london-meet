@@ -9,12 +9,15 @@ import com.londonmeet.pojo.vo.ActivityLikeVO;
 import com.londonmeet.pojo.vo.ActivityPageVO;
 import com.londonmeet.pojo.vo.ActivityPostVO;
 import com.londonmeet.pojo.vo.ActivityRegistrationVO;
+import com.londonmeet.pojo.vo.PendingReviewVO;
 import com.londonmeet.server.security.LoginUser;
 import com.londonmeet.server.service.ActivityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/activities")
@@ -34,6 +37,37 @@ public class ActivityController {
     @GetMapping
     public ApiResponse<ActivityPageVO> listActivities(ActivityQueryRequest request) {
         return ApiResponse.success(activityService.listActivities(request));
+    }
+
+    @GetMapping("/me/ongoing")
+    public ApiResponse<ActivityPageVO> listMyOngoingActivities(
+            ActivityQueryRequest request,
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        return ApiResponse.success(activityService.listMyOngoingActivities(request, loginUser));
+    }
+
+    @GetMapping("/pending-review")
+    public ApiResponse<List<PendingReviewVO>> listPendingReviews(
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        return ApiResponse.success(activityService.listPendingReviews(loginUser));
+    }
+
+    @PostMapping("/registrations/{registrationId}/approve")
+    public ApiResponse<ActivityRegistrationVO> approveRegistration(
+            @PathVariable Long registrationId,
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        return ApiResponse.success(activityService.approveRegistration(registrationId, loginUser));
+    }
+
+    @PostMapping("/registrations/{registrationId}/reject")
+    public ApiResponse<ActivityRegistrationVO> rejectRegistration(
+            @PathVariable Long registrationId,
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        return ApiResponse.success(activityService.rejectRegistration(registrationId, loginUser));
     }
 
     @GetMapping("/{id}")

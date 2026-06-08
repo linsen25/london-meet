@@ -2,7 +2,8 @@
   <!-- 顶部栏 -->
   <view class="post-topbar">
     <view class="back-hit" bindtap="onBackTap">
-      <text class="back-text">返回</text>
+      <van-icon name="arrow-left" size="22px" color="#FFFFFF" />
+      <text class="back-text">??</text>
     </view>
     <text class="topbar-title">活动详情</text>
     <view class="topbar-right"></view>

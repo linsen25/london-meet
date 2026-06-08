@@ -3,6 +3,7 @@
   "usingComponents": {
     "ec-canvas": "/components/ec-canvas/ec-canvas",
     "van-rate": "@vant/weapp/rate/index",
+    "van-icon": "@vant/weapp/icon/index",
     "mf-button": "/components/mf-button/index"
   }
 }

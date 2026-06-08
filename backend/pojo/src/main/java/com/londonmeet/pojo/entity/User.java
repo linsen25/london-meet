@@ -48,6 +48,15 @@ public class User {
     @Column(name = "avatar_url", length = 500)
     private String avatarUrl;
 
+    @Column(name = "cover_url", length = 500)
+    private String coverUrl;
+
+    @Column(name = "motto", length = 100)
+    private String motto;
+
+    @Column(name = "tags_json", columnDefinition = "TEXT")
+    private String tagsJson;
+
     /**
      * 手机号
      */

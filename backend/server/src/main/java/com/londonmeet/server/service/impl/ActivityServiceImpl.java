@@ -9,6 +9,7 @@ import com.londonmeet.pojo.dto.request.ActivityQueryRequest;
 import com.londonmeet.pojo.dto.request.ActivitySearchRequest;
 import com.londonmeet.pojo.entity.Activity;
 import com.londonmeet.pojo.entity.ActivityRegistration;
+import com.londonmeet.pojo.entity.Notification;
 import com.londonmeet.pojo.entity.Tag;
 import com.londonmeet.pojo.entity.User;
 import com.londonmeet.pojo.vo.ActivityDetailVO;
@@ -16,12 +17,14 @@ import com.londonmeet.pojo.vo.ActivityLikeVO;
 import com.londonmeet.pojo.vo.ActivityPageVO;
 import com.londonmeet.pojo.vo.ActivityPostVO;
 import com.londonmeet.pojo.vo.ActivityRegistrationVO;
+import com.londonmeet.pojo.vo.PendingReviewVO;
 import com.londonmeet.server.repository.ActivityRepository;
 import com.londonmeet.server.repository.ActivityRegistrationRepository;
 import com.londonmeet.server.repository.TagRepository;
 import com.londonmeet.server.repository.UserRepository;
 import com.londonmeet.server.security.LoginUser;
 import com.londonmeet.server.service.ActivityService;
+import com.londonmeet.server.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,6 +63,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ActivityRegistrationRepository activityRegistrationRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -193,16 +197,90 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional(readOnly = true)
+    public ActivityPageVO listMyOngoingActivities(ActivityQueryRequest request, LoginUser loginUser) {
+        Long userId = requireUserId(loginUser);
+        int page = normalizePage(request.getPage());
+        int pageSize = normalizePageSize(request.getPageSize());
+
+        Page<Activity> result = activityRepository.findRelatedOngoingActivities(
+                userId,
+                STATUS_PUBLISHED,
+                LocalDateTime.now(),
+                CONFLICT_STATUSES,
+                PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.ASC, "endAt"))
+        );
+
+        return ActivityPageVO.builder()
+                .list(result.getContent().stream().map(this::toPostVO).toList())
+                .page(page)
+                .pageSize(pageSize)
+                .hasMore(result.hasNext())
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PendingReviewVO> listPendingReviews(LoginUser loginUser) {
+        Long creatorUserId = requireUserId(loginUser);
+        List<ActivityRegistration> registrations =
+                activityRegistrationRepository.findByCreatorUserIdAndStatusOrderByCreatedAtAsc(
+                        creatorUserId,
+                        ActivityRegistration.STATUS_PENDING
+                );
+
+        if (registrations.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> activityIds = registrations.stream()
+                .map(ActivityRegistration::getActivityId)
+                .distinct()
+                .toList();
+        List<Long> userIds = registrations.stream()
+                .map(ActivityRegistration::getUserId)
+                .distinct()
+                .toList();
+
+        Map<Long, Activity> activityById = activityRepository.findAllById(activityIds).stream()
+                .collect(Collectors.toMap(Activity::getId, Function.identity()));
+        Map<Long, User> userById = userRepository.findAllById(userIds).stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        return registrations.stream()
+                .map(registration -> {
+                    Activity activity = activityById.get(registration.getActivityId());
+                    User user = userById.get(registration.getUserId());
+
+                    return PendingReviewVO.builder()
+                            .registrationId(registration.getId())
+                            .activityId(registration.getActivityId())
+                            .userId(registration.getUserId())
+                            .activityTitle(activity == null ? "" : activity.getTitle())
+                            .nickname(user == null ? "MeetFun User" : resolveAuthorName(user))
+                            .avatarUrl(user == null ? null : user.getAvatarUrl())
+                            .overallRating(5.0)
+                            .timelinessRating(5.0)
+                            .reviewCount(0)
+                            .appliedAt(toEpochMillis(registration.getCreatedAt()))
+                            .build();
+                })
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ActivityDetailVO getActivityDetail(Long id, LoginUser loginUser) {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Activity not found."));
 
         Optional<ActivityRegistration> registration = Optional.empty();
+        boolean isCreator = false;
         if (loginUser != null && loginUser.userId() != null) {
             registration = activityRegistrationRepository.findByActivityIdAndUserId(id, loginUser.userId());
+            isCreator = loginUser.userId().equals(activity.getCreatorUserId());
         }
 
-        return toDetailVO(activity, registration.orElse(null));
+        return toDetailVO(activity, registration.orElse(null), isCreator);
     }
 
     @Override
@@ -247,7 +325,9 @@ public class ActivityServiceImpl implements ActivityService {
             registration.setReviewedAt(null);
             registration.setReviewedBy(null);
             registration.setJoinedGroupAt(null);
-            return toRegistrationVO(activityRegistrationRepository.save(registration));
+            registration = activityRegistrationRepository.save(registration);
+            notifyRegistrationSubmitted(activity, registration, userId);
+            return toRegistrationVO(registration);
         }
 
         ActivityRegistration registration = ActivityRegistration.builder()
@@ -257,7 +337,9 @@ public class ActivityServiceImpl implements ActivityService {
                 .noticeCode(ActivityRegistration.NOTICE_APPLICATION_SUBMITTED)
                 .build();
 
-        return toRegistrationVO(activityRegistrationRepository.save(registration));
+        registration = activityRegistrationRepository.save(registration);
+        notifyRegistrationSubmitted(activity, registration, userId);
+        return toRegistrationVO(registration);
     }
 
     @Override
@@ -280,6 +362,28 @@ public class ActivityServiceImpl implements ActivityService {
         }
 
         return toRegistrationVO(registration);
+    }
+
+    @Override
+    @Transactional
+    public ActivityRegistrationVO approveRegistration(Long registrationId, LoginUser loginUser) {
+        return reviewRegistration(
+                registrationId,
+                loginUser,
+                ActivityRegistration.STATUS_APPROVED,
+                ActivityRegistration.NOTICE_APPROVED
+        );
+    }
+
+    @Override
+    @Transactional
+    public ActivityRegistrationVO rejectRegistration(Long registrationId, LoginUser loginUser) {
+        return reviewRegistration(
+                registrationId,
+                loginUser,
+                ActivityRegistration.STATUS_REJECTED,
+                ActivityRegistration.NOTICE_REJECTED
+        );
     }
 
     @Override
@@ -326,7 +430,7 @@ public class ActivityServiceImpl implements ActivityService {
                 .build();
     }
 
-    private ActivityDetailVO toDetailVO(Activity activity, ActivityRegistration registration) {
+    private ActivityDetailVO toDetailVO(Activity activity, ActivityRegistration registration, boolean isCreator) {
         int joinedCount = capacityCount(activity.getId());
         int totalCount = activity.getRecruitCount() == null ? 0 : activity.getRecruitCount();
         List<String> images = parseStringList(activity.getImageUrlsJson());
@@ -346,12 +450,81 @@ public class ActivityServiceImpl implements ActivityService {
                 .joinedCount(joinedCount)
                 .totalCount(totalCount)
                 .full(totalCount > 0 && joinedCount >= totalCount)
+                .isCreator(isCreator)
                 .locationText(activity.getLocationText())
                 .mapImageUrl(activity.getMapImageUrl())
                 .inviteQrUrl(activity.getInviteQrUrl())
                 .registrationStatus(registration == null ? null : registration.getStatus())
                 .noticeCode(registration == null ? null : registration.getNoticeCode())
                 .build();
+    }
+
+    private ActivityRegistrationVO reviewRegistration(
+            Long registrationId,
+            LoginUser loginUser,
+            String targetStatus,
+            int noticeCode
+    ) {
+        Long reviewerId = requireUserId(loginUser);
+        ActivityRegistration registration = activityRegistrationRepository.findById(registrationId)
+                .orElseThrow(() -> new BusinessException("Registration not found."));
+        Activity activity = activityRepository.findById(registration.getActivityId())
+                .orElseThrow(() -> new BusinessException("Activity not found."));
+
+        if (!reviewerId.equals(activity.getCreatorUserId())) {
+            throw new BusinessException("Only activity creator can review this registration.");
+        }
+        if (!ActivityRegistration.STATUS_PENDING.equals(registration.getStatus())) {
+            throw new BusinessException("Registration has already been reviewed.");
+        }
+
+        registration.setStatus(targetStatus);
+        registration.setNoticeCode(noticeCode);
+        registration.setReviewedBy(reviewerId);
+        registration.setReviewedAt(LocalDateTime.now());
+
+        registration = activityRegistrationRepository.save(registration);
+        notifyRegistrationReviewed(activity, registration, targetStatus);
+        return toRegistrationVO(registration);
+    }
+
+    private void notifyRegistrationSubmitted(Activity activity, ActivityRegistration registration, Long applicantUserId) {
+        User applicant = userRepository.findById(applicantUserId).orElse(null);
+        String applicantName = resolveAuthorName(applicant);
+        String activityTitle = activity.getTitle();
+
+        notificationService.createNotification(
+                activity.getCreatorUserId(),
+                Notification.TYPE_REGISTRATION_SUBMITTED_CREATOR,
+                "有人报名了你的活动",
+                applicantName + " 想加入「" + activityTitle + "」，去审核一下吧。",
+                Notification.RELATED_PENDING_REVIEW,
+                registration.getId()
+        );
+
+        notificationService.createNotification(
+                applicantUserId,
+                Notification.TYPE_REGISTRATION_SUBMITTED_USER,
+                "报名已提交",
+                "你已报名「" + activityTitle + "」，等待创建者审核。",
+                Notification.RELATED_ACTIVITY,
+                activity.getId()
+        );
+    }
+
+    private void notifyRegistrationReviewed(Activity activity, ActivityRegistration registration, String targetStatus) {
+        boolean approved = ActivityRegistration.STATUS_APPROVED.equals(targetStatus);
+
+        notificationService.createNotification(
+                registration.getUserId(),
+                approved ? Notification.TYPE_REGISTRATION_APPROVED : Notification.TYPE_REGISTRATION_REJECTED,
+                approved ? "报名已通过" : "报名未通过",
+                approved
+                        ? "你已通过「" + activity.getTitle() + "」报名，可以加入群聊了。"
+                        : "你报名的「" + activity.getTitle() + "」未通过审核。",
+                Notification.RELATED_ACTIVITY,
+                activity.getId()
+        );
     }
 
     private ActivityRegistrationVO toRegistrationVO(ActivityRegistration registration) {
@@ -490,6 +663,9 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private String resolveAuthorName(User creator) {
+        if (creator == null) {
+            return "MeetFun User";
+        }
         if (StringUtils.hasText(creator.getNickname())) {
             return creator.getNickname().trim();
         }

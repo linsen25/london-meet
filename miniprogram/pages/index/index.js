@@ -1,4 +1,5 @@
 const { wechatLogin } = require("../../api/auth");
+const { submitReview } = require("../../api/review");
 
 Page({
   data: {
@@ -6,10 +7,13 @@ Page({
     loginLoading: false,
     activeTab: "activity",
     showPendingReview: false,
+    showNotifications: false,
     showReviewRate: false,
     reviewRateMode: "activity",
     reviewRateTitle: "",
     reviewRateItemId: "",
+    reviewRateActivityId: null,
+    reviewRateTargetId: null,
     showSearch: false,
     searchTranslateX: 0,
     searchTransition: "none",
@@ -42,7 +46,6 @@ Page({
   onLogin() {
     if (this.data.loginLoading) return;
 
-    console.log("[login] tap");
     this.setData({ loginLoading: true });
     wx.showLoading({
       title: "登录中...",
@@ -51,7 +54,6 @@ Page({
 
     wx.login({
       success: (loginRes) => {
-        console.log("[login] wx.login success", loginRes);
         const code = loginRes && loginRes.code;
         if (!code) {
           wx.hideLoading();
@@ -65,7 +67,6 @@ Page({
 
         wechatLogin({ code })
           .then((user) => {
-            console.log("[login] backend success", user);
             if (!user || !user.token) {
               throw new Error("登录响应缺少 token");
             }
@@ -133,6 +134,39 @@ Page({
     this.setData({ showPendingReview: false });
   },
 
+  onOpenNotifications() {
+    this.setData({ showNotifications: true });
+  },
+
+  onCloseNotifications() {
+    this.setData({ showNotifications: false });
+  },
+
+  onNotificationUnreadChange(e) {
+    const count = e && e.detail ? e.detail.count : 0;
+    const homeView = this.selectComponent("#homeView");
+    if (homeView && typeof homeView.updateNotificationUnreadCount === "function") {
+      homeView.updateNotificationUnreadCount(count);
+    }
+  },
+
+  onOpenNotificationRelated(e) {
+    const detail = e.detail || {};
+    const relatedType = detail.relatedType || "";
+    const relatedId = detail.relatedId;
+
+    this.setData({ showNotifications: false }, () => {
+      if (relatedType === "pending_review") {
+        this.setData({ showPendingReview: true });
+        return;
+      }
+
+      if (relatedType === "activity" && relatedId) {
+        this.onOpenPost({ detail: { id: relatedId } });
+      }
+    });
+  },
+
   onOpenReviewRate(e) {
     const detail = e.detail || {};
 
@@ -140,7 +174,9 @@ Page({
       showReviewRate: true,
       reviewRateMode: detail.mode || "activity",
       reviewRateTitle: detail.itemTitle || "",
-      reviewRateItemId: detail.itemId || ""
+      reviewRateItemId: detail.itemId || "",
+      reviewRateActivityId: detail.activityId || null,
+      reviewRateTargetId: detail.targetId || null
     });
   },
 
@@ -149,8 +185,41 @@ Page({
   },
 
   onSubmitReviewRate(e) {
-    console.log("评分提交：", e.detail);
-    this.setData({ showReviewRate: false });
+    const detail = e.detail || {};
+
+    wx.showLoading({
+      title: "提交中...",
+      mask: true
+    });
+
+    submitReview({
+      mode: detail.mode,
+      activityId: detail.activityId,
+      targetId: detail.targetId,
+      scores: detail.items || []
+    })
+      .then(() => {
+        const homeView = this.selectComponent("#homeView");
+        if (homeView && typeof homeView.markReviewCompleted === "function") {
+          homeView.markReviewCompleted(detail);
+        }
+
+        wx.showToast({
+          title: "评价已提交",
+          icon: "success"
+        });
+        this.setData({ showReviewRate: false });
+      })
+      .catch((err) => {
+        console.error("[review submit failed]", err);
+        wx.showToast({
+          title: err.message || "提交失败",
+          icon: "none"
+        });
+      })
+      .finally(() => {
+        wx.hideLoading();
+      });
   },
 
   onOpenPost(e) {
@@ -320,7 +389,7 @@ Page({
     this._searchSettleTimer = null;
     this._searchCloseTimer = null;
   },
-  
+
   onDoSearch(e) {
     const keyword = e.detail.keyword || "";
     console.log("搜索词：", keyword);

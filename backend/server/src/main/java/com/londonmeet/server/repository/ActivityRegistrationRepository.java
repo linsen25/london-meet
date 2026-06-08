@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface ActivityRegistrationRepository extends JpaRepository<ActivityRegistration, Long> {
@@ -14,6 +15,24 @@ public interface ActivityRegistrationRepository extends JpaRepository<ActivityRe
     Optional<ActivityRegistration> findByActivityIdAndUserId(Long activityId, Long userId);
 
     long countByActivityIdAndStatusIn(Long activityId, Collection<String> statuses);
+
+    List<ActivityRegistration> findByActivityIdInAndStatusIn(
+            Collection<Long> activityIds,
+            Collection<String> statuses
+    );
+
+    @Query("""
+            select r
+            from ActivityRegistration r
+            join Activity a on a.id = r.activityId
+            where a.creatorUserId = :creatorUserId
+              and r.status = :status
+            order by r.createdAt asc
+            """)
+    List<ActivityRegistration> findByCreatorUserIdAndStatusOrderByCreatedAtAsc(
+            @Param("creatorUserId") Long creatorUserId,
+            @Param("status") String status
+    );
 
     @Query("""
             select count(r) > 0

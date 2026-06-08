@@ -85,6 +85,7 @@ Component({
     endTime: "",
     registrationStatus: "",
     noticeCode: null,
+    isCreator: false,
     isFull: false,
     applyText: "报名",
     applyDisabled: false,
@@ -139,6 +140,7 @@ Component({
         endTime: end.time,
         registrationStatus: detail.registrationStatus || "",
         noticeCode: detail.noticeCode,
+        isCreator: !!detail.isCreator,
         isFull: !!detail.full,
         groupQrUrl: detail.inviteQrUrl || FALLBACK_QR,
         mapImgUrl: detail.mapImageUrl || ""
@@ -148,11 +150,14 @@ Component({
     syncApplyState() {
       const status = this.data.registrationStatus;
       const isFull = this.data.isFull;
+      const isCreator = this.data.isCreator;
       let applyText = "报名";
       let applyDisabled = false;
       let applyBg = "#07C160";
 
-      if (status === "pending") {
+      if (isCreator) {
+        applyText = "加入群聊";
+      } else if (status === "pending") {
         applyText = "审核中";
         applyDisabled = true;
         applyBg = "#8E8E93";
@@ -196,7 +201,7 @@ Component({
       if (this.data.applyDisabled || this.data.applying) return;
 
       const status = this.data.registrationStatus;
-      if (status === "approved" || status === "joined_group") {
+      if (this.data.isCreator || status === "approved" || status === "joined_group") {
         this.openGroupPopup();
         return;
       }
@@ -231,7 +236,7 @@ Component({
       const id = this.data.postId;
       this.setData({ showGroupPopup: true });
 
-      if (!id || this.data.registrationStatus === "joined_group") {
+      if (!id || this.data.isCreator || this.data.registrationStatus === "joined_group") {
         return;
       }
 

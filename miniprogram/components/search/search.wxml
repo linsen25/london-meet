@@ -1,8 +1,8 @@
 <view class="search-root">
   <view class="search-topbar">
     <view class="search-back" bindtap="onBackTap">
-      <text class="search-back__icon">‹</text>
-      <text class="search-back__text">返回</text>
+      <van-icon name="arrow-left" size="22px" color="#FFFFFF" />
+      <text class="search-back__text">??</text>
     </view>
   </view>
 

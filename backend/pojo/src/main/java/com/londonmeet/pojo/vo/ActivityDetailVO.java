@@ -31,6 +31,8 @@ public class ActivityDetailVO {
 
     private Boolean full;
 
+    private Boolean isCreator;
+
     private String locationText;
 
     private String mapImageUrl;

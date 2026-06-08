@@ -2,6 +2,7 @@
   "component": true,
   "usingComponents": {
     "mf-button": "/components/mf-button/index",
+    "van-icon": "@vant/weapp/icon/index",
     "van-uploader": "@vant/weapp/uploader/index",
     "van-calendar": "@vant/weapp/calendar/index",
     "van-popup": "@vant/weapp/popup/index",
