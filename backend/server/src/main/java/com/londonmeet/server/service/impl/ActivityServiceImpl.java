@@ -424,6 +424,7 @@ public class ActivityServiceImpl implements ActivityService {
                 .likeCount(activity.getLikeCount())
                 .liked(activity.getLiked())
                 .progressPct(calculateProgressPct(activity))
+                .locationText(activity.getLocationText())
                 .startAt(toEpochMillis(activity.getStartAt()))
                 .endAt(toEpochMillis(activity.getEndAt()))
                 .progressGif(activity.getProgressGif())

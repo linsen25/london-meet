@@ -23,6 +23,8 @@ public class ActivityPostVO {
 
     private Integer progressPct;
 
+    private String locationText;
+
     private Long startAt;
 
     private Long endAt;
